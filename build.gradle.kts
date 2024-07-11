@@ -36,6 +36,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
+    implementation("org.springframework.kafka:spring-kafka:2.7.2")
 }
 
 tasks.withType<Test> {
