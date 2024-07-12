@@ -37,7 +37,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
-    implementation("org.springframework.kafka:spring-kafka:2.7.2")
+    implementation("org.springframework.kafka:spring-kafka:3.2.1")
 }
 
 tasks.withType<Test> {
