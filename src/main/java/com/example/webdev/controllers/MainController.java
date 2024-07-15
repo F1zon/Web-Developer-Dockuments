@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,10 +22,12 @@ public class MainController {
     }
 
     @GetMapping(value = "/docks")
-    public ResponseEntity<List<Contract>> getContracts() {
-        final List<Contract> contracts = contractService.readAll();
+    public ResponseEntity<List<List<String>>> getContracts() {
+        final List<List<String>> contracts = contractService.readAll();
         return contracts != null && !contracts.isEmpty()
                 ? new ResponseEntity<>(contracts, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+
 }
