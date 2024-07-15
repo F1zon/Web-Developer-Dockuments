@@ -12,31 +12,15 @@ import java.util.List;
 
 @RestController
 public class MainController {
-    private final StatusServiceImpl statusService;
-    private final PositionsServiceImpl positionsService;
-    private final PersonalServiceImpl personalService;
-    private final FilesServiceImpl filesService;
-    private final DepartmentsServiceImpl departmentsService;
-    private final DatesServiceImpl datesService;
-    private final CustomerServiceImpl customerService;
+
     private final ContractServiceImpl contractService;
 
     @Autowired
-    public MainController(StatusServiceImpl statusService, PositionsServiceImpl positionsService,
-                          PersonalServiceImpl personalService, FilesServiceImpl filesService,
-                          DepartmentsServiceImpl departmentsService, DatesServiceImpl datesService,
-                          CustomerServiceImpl customerService, ContractServiceImpl contractService) {
-        this.statusService = statusService;
-        this.positionsService = positionsService;
-        this.personalService = personalService;
-        this.filesService = filesService;
-        this.departmentsService = departmentsService;
-        this.datesService = datesService;
-        this.customerService = customerService;
+    public MainController(ContractServiceImpl contractService) {
         this.contractService = contractService;
     }
 
-    @GetMapping(value = "/main")
+    @GetMapping(value = "/docks")
     public ResponseEntity<List<Contract>> getContracts() {
         final List<Contract> contracts = contractService.readAll();
         return contracts != null && !contracts.isEmpty()
