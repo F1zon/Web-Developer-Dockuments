@@ -10,7 +10,7 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     /**
      * Укороченный запрос для главной страницы
-     * @return
+     * @return Укороченный список строк из таблицы Должности
      */
     @Query(value = "SELECT д.id_contract, д.objects, з.title, д.executor, с.fio, ст.title FROM договоры д " +
             "JOIN заказчики з ON д.customer = з.id_customer " +
