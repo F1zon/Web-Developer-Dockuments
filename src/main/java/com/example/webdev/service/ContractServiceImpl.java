@@ -1,6 +1,5 @@
 package com.example.webdev.service;
 
-import com.example.webdev.interfaces.UniMethods;
 import com.example.webdev.model.Contract;
 import com.example.webdev.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,9 @@ public class ContractServiceImpl {
     }
 
 //    @Override
-//    public void create(Contract model) {
-//        repository.save(model);
-//    }
+    public void create(Contract model) {
+        repository.save(model);
+    }
 //
 //    @Override
 //    public List<Contract> readAll() {
