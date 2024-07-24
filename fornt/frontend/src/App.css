@@ -1,38 +1,36 @@
-.App {
-  text-align: center;
+@import url(./reset.css);
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url(./components/Menu/menu.css);
+@import url(./components/Headers/header.css);
+@import url(./components/MainMenu/mainMenu.css);
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 0.5fr 1fr 3fr;
+    grid-template: grid-template-rows / grid-template-columns;
+    width: 100vw;
+    height: 100vh;
+    /* border: 2px solid rgb(80, 145, 27); 
+    border-radius: 5px; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.container {
+    display: grid;
+    grid-template-areas: "f i i i i i i i"
+                         "f b b b b b b b"
+                         "f b b b b b b b"
+                         "f b b b b b b b"
+                         "f b b b b b b b";
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+ /* Для удобства отладки */
+/* .container * { 
+    border: 1px dashed;
+    border-radius: 10px;
+    border-color: blueviolet;
+} */
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+.Menu { grid-area: f; }
+.Header { grid-area: i; }
+.Main { grid-area: b; }

@@ -11,14 +11,14 @@ function DockList() {
     });
 
     return (
-        <dir>
+        <div>
             <h2>Dockuments</h2>
             <ul>
                 {docks.map(dock => (
                     <li>{dock}</li>
                 ))}
             </ul>
-        </dir>
+        </div>
     );
 }
 

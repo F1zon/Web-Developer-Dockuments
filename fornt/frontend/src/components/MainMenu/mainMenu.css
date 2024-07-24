@@ -1,0 +1,74 @@
+.Main {
+    display: grid;
+    background: linear-gradient(161deg, rgba(51, 67, 106, 0.76) 15%, #182138 95%);
+    grid-template-rows: 0.8fr 7fr;
+    font-family: 'Montserrat';
+}
+
+.RedactBar {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    padding-left: 5vw;
+    padding-right: 35vw;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+}
+.redactDock {
+    width: 8vw;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: -7vw;
+}
+.crateDock {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    width: 15vw;
+    background: #2DD1F5;
+    border-radius: 10px;
+}
+
+.DocksTable {
+    display: grid;
+    grid-template-rows: 0.25fr 3fr 0.25fr;
+    padding: 30px;
+}
+.InfoBar {
+    display: grid;
+    background: rgba(80.46, 217.48, 247.56, 0.50);
+    border-radius: 5px;
+    grid-template-areas: "cc obj cu ex pr st";
+    grid-template-columns: 0.5fr 2fr repeat(4, 1fr);
+    text-align: center;
+    align-items: center;
+    color: #A1EEFF;
+    font-size: 14;
+    font-weight: 600;
+}
+.custom-checkbox {grid-area: cc;}
+.object {grid-area: obj;}
+.customer {grid-area: cu;}
+.executor {grid-area: ex;}
+.pers {grid-area: pr;}
+.state {grid-area: st;}
+
+.custom-checkbox {
+    width: 1.2vw;
+}
+
+.bottomNavBar {
+    display: grid;
+    color: white;
+    background: rgba(80.46, 217.48, 247.56, 0.50);
+    border-radius: 5px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    padding-left: 30vw;
+    padding-right: 30vw;
+    text-align: center;
+    align-items: center;
+}
+.bottomNavBar a {
+    text-decoration: none;
+    color: #ffff;
+}

@@ -1,15 +1,14 @@
-import DockList from './components/DockList';
-
-import logo from './logo.svg';
-import './App.css';
+import Menu from "./components/Menu/Menu";
+import Header from "./components/Headers/Headers";
+import Main from "./components/MainMenu/Main";
+import './App.css'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <DockList />
-      </header>
+    <div className="container">
+      <Menu />
+      <Header />
+      <Main />
     </div>
   );
 }

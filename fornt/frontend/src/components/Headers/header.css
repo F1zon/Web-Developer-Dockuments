@@ -1,0 +1,48 @@
+.Header {
+    display: grid;
+    background-color: #465E86;
+    font-family: 'Montserrat';
+    box-shadow: 0px 4px 20.700000762939453px -5px #121832;
+    grid-template-areas: "nv . nt av nm";
+    grid-template-columns: 4fr 1fr 1fr 1fr;
+    align-items: center;
+}
+.NavBar {grid-area: nv;}
+.notImg {grid-area: nt;}
+.avatar {grid-area: av;}
+.Name {grid-area: nm;}
+
+.NavBar {
+    display: grid;
+    font-size: 20px;
+    font-weight: 700;
+    padding-left: 5vw;
+}
+.NavBar a {
+    color: #06D2FF;
+}
+
+.notImg {
+    display: grid;
+    width: 2vw;
+    margin-left: 7vw;
+}
+.nitfImg {
+    width: 2vw;
+}
+
+.avatar {
+    width: 3vw;
+    height: 6vh;
+    border: 2px #3795CA solid;
+    border-radius: 900px;
+    box-shadow: 0px 0px 6px 3px rgba(55, 149, 202, 0.50);
+}
+
+.Name {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: -6vw;
+    margin-right: 4vw;
+}
