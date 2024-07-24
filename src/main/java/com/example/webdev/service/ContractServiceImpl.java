@@ -1,6 +1,7 @@
 package com.example.webdev.service;
 
 import com.example.webdev.model.Contract;
+import com.example.webdev.model.SmallContract;
 import com.example.webdev.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +16,19 @@ public class ContractServiceImpl {
     @Autowired
     private ContractRepository repository;
 
-    public List<List<String>> readAll() {
-        List<String> contracts = repository.findAllContractsJoin();
-        List<List<String>> list = new ArrayList<>();
-        for (String contract : contracts) {
-            list.add(Arrays.asList(contract.split(",")));
-        }
-
-        return list;
+    public List<SmallContract> readAll() {
+        return repository.findAllContractsJoin();
     }
+
+//    public List<List<String>> readAll() {
+//        List<String> contracts = repository.findAllContractsJoin();
+//        List<List<String>> list = new ArrayList<>();
+//        for (String contract : contracts) {
+//            list.add(Arrays.asList(contract.split(",")));
+//        }
+//
+//        return list;
+//    }
 
 //    @Override
     public void create(Contract model) {

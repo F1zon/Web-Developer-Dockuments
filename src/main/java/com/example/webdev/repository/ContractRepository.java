@@ -1,6 +1,7 @@
 package com.example.webdev.repository;
 
 import com.example.webdev.model.Contract;
+import com.example.webdev.model.SmallContract;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,5 +18,5 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
             "JOIN сотрудники с ON д.responsible = с.id_personal " +
             "JOIN статусы ст ON д.states = ст.id_status;",
                 nativeQuery = true)
-    List<String> findAllContractsJoin();
+    List<SmallContract> findAllContractsJoin();
 }
