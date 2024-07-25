@@ -26,11 +26,18 @@ function Main() {
                     <p className="state">Статус</p>
                 </div>
                 <div className="docksTable">
-                    <ul>
+                    <table>
                         {docks.map(dock => (
-                            <li>{dock}</li>
+                            <tr key={dock.idCustomer}>
+                                <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox" />
+                                <td className="object"> {dock.objects} </td>
+                                <td className="customer"> {dock.customer} </td>
+                                <td className="executor"> {dock.executor} </td>
+                                <td className="pers"> {dock.responsible} </td>
+                                <td className="state"> {dock.states} </td>
+                            </tr>
                         ))}
-                    </ul>
+                    </table>
                 </div>
                 <div className="bottomNavBar">
                     <a href="" className="colNavLink">1</a>

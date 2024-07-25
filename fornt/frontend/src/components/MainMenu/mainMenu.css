@@ -34,6 +34,21 @@
     grid-template-rows: 0.25fr 3fr 0.25fr;
     padding: 30px;
 }
+
+table {
+    display: grid;
+
+}
+tr {
+    display: grid;
+    grid-template-areas: "cc obj cu ex pr st";
+    grid-template-columns: 0.5fr 2fr repeat(4, 1fr);
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    align-items: center;
+}
+
 .InfoBar {
     display: grid;
     background: rgba(80.46, 217.48, 247.56, 0.50);
