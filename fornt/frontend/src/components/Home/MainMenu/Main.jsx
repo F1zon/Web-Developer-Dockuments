@@ -23,6 +23,7 @@ function Main() {
                     <p className="customer">Заказчик</p>
                     <p className="executor">Исполнитель</p>
                     <p className="pers">Ответсвенный</p>
+                    <p className="dep">Отдел</p>
                     <p className="state">Статус</p>
                 </div>
                 <div className="docksTable">
@@ -34,6 +35,7 @@ function Main() {
                                 <td className="customer"> {dock.customer} </td>
                                 <td className="executor"> {dock.executor} </td>
                                 <td className="pers"> {dock.responsible} </td>
+                                <td className="dep"> {dock.department} </td>
                                 <td className="state"> {dock.states} </td>
                             </tr>
                         ))}
