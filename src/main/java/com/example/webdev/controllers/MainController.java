@@ -29,17 +29,46 @@ public class MainController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-//    @GetMapping(value = "/docks")
-//    public ResponseEntity<List<List<String>>> getContracts() {
-//        final List<List<String>> contracts = contractService.readAll();
-//        return contracts != null && !contracts.isEmpty()
-//                ? new ResponseEntity<>(contracts, HttpStatus.OK)
+    /**
+     * GET запрос для удобства заполнения информации
+     * @return CreateNewContractModel (объекты, персонал, статусы)
+     */
+//    @GetMapping(value = "/info")
+//    public ResponseEntity<CreateNewContractModel> getInfoDb() {
+//        final CreateNewContractModel model = contractService.generateDbInfo();
+//        return model != null
+//                ? new ResponseEntity<>(model, HttpStatus.OK)
 //                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    }
 
+    /**
+     * POST запрос для добавления нового договора
+     * @param contract Новый договор
+     * @return HTTP Статус
+     */
     @PostMapping(value = "/created")
     public ResponseEntity<Contract> addContract(@RequestBody Contract contract) {
         contractService.create(contract);
         return new ResponseEntity<>(contract, HttpStatus.CREATED);
+    }
+
+    /**
+     * PUT ответ, обновление записи в таблице
+     * @param id int id Договора
+     * @param contract Contract новая информация по договору
+     * @return HTTP Статус
+     */
+    @PutMapping(value = "/docks/{id}")
+    public ResponseEntity<Contract> updateContract(@PathVariable("id") int id, @RequestBody Contract contract) {
+        Contract contract1 = contractService.findById(id);
+        contractService.update(contract1);
+        return new ResponseEntity<>(contract1, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/docks/{id}")
+    public ResponseEntity<Contract> deleteContract(@PathVariable("id") int id) {
+        Contract contract1 = contractService.findById(id);
+        contractService.delete(contract1);
+        return new ResponseEntity<>(contract1, HttpStatus.OK);
     }
 }

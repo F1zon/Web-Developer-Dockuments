@@ -1,22 +1,24 @@
 package com.example.webdev.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import lombok.Data;
 
-@Entity
+@Data
 public class SmallContract {
-    @Id
-    Long id;
-
-    @Column
-    String object;
-    @Column
+//    Long idContract;
+    String objects;
     String customer;
-    @Column
     String executor;
-    @Column
     String responsible;
-    @Column
+    String department;
     String states;
+
+    public SmallContract(String objects, String customer, String executor, String responsible, String department, String states) {
+//        this.idContract = Long.valueOf(idContract);
+        this.objects = objects;
+        this.customer = customer;
+        this.executor = executor;
+        this.responsible = responsible;
+        this.department = department;
+        this.states = states;
+    }
 }

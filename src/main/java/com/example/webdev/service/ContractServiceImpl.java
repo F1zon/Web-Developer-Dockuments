@@ -17,52 +17,34 @@ public class ContractServiceImpl {
     private ContractRepository repository;
 
     public List<SmallContract> readAll() {
-        return repository.findAllContractsJoin();
+        List<String> results = repository.findAllContractsJoin();
+        List<String> tmp = new ArrayList<>();
+
+        List<SmallContract> result = new ArrayList<>();
+        for (String s : results) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new SmallContract(tmp.get(0), tmp.get(1), tmp.get(2), tmp.get(3), tmp.get(4), tmp.get(5)));
+        }
+
+        return result;
     }
 
-//    public List<List<String>> readAll() {
-//        List<String> contracts = repository.findAllContractsJoin();
-//        List<List<String>> list = new ArrayList<>();
-//        for (String contract : contracts) {
-//            list.add(Arrays.asList(contract.split(",")));
-//        }
-//
-//        return list;
-//    }
-
-//    @Override
     public void create(Contract model) {
         repository.save(model);
     }
-//
-//    @Override
-//    public List<Contract> readAll() {
-//        return repository.findAll();
-//    }
-//
-//    @Override
-//    public Contract read(int id) {
-//        return repository.getReferenceById(id);
-//    }
-//
-//    @Override
-//    public boolean update(Contract model, int id) {
-//        if (repository.existsById(id)) {
-//            model.setIdContract(id);
-//            repository.save(model);
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean delete(int id) {
-//        if (repository.existsById(id)) {
-//            repository.deleteById(id);
-//            return true;
-//        }
-//
-//        return false;
-//    }
+
+    public Contract findById(int id) {
+        return repository.findById(id).get();
+    }
+
+    public void update(Contract model) {
+        repository.setContractById(model.getObjects(), model.getCustomer(), model.getExecutor(),
+                model.getFiles(), model.getResponsible(), model.getResponsible2(), model.getDates(),
+                model.getStates(), model.getStates());
+    }
+
+    public void delete(Contract model) {
+        repository.delete(model);
+    }
+
 }

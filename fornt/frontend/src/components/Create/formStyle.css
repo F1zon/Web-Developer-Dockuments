@@ -1,0 +1,35 @@
+form {
+    display: grid;
+    padding: 50px;
+    grid-template-areas: "la la";
+}
+
+
+label {
+    display: grid;
+    font-size: 36px;
+    font-weight: 700;
+    width: 35vw;
+    padding-left: 20px;
+    margin-top: 50px;
+    grid-area: "la";
+    color: white;
+}
+input {
+    width: 30vw;
+    background: white;
+    margin-top: 20px;
+    color: black;
+    font-size: 26px;
+    padding-left: 20px;
+    height: 50px;
+    border-radius: 6px;
+}
+
+select {
+    background: white;
+    color: black;
+    font-size: 26px;
+    padding-left: 20px;
+    border-radius: 6px;
+}

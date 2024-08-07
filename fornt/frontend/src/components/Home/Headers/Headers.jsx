@@ -6,7 +6,7 @@ function Header() {
     return(
         <div className="Header">
             <div className="NavBar">
-                <a href="" className="docks">Договоры</a>
+                <a href="/" className="docks">Договоры</a>
             </div>
             <a href="" className="notImg">
                 <img src={notifications} alt="nitfImg" className="nitfImg" />

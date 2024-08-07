@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Switch, Route, Link, useNavigate } from 'react-router-dom';
+import Created from '../../Create/Create'
 
 function Main() {
     const [docks, setDocks] = useState([]);
@@ -10,11 +12,22 @@ function Main() {
             .catch(error => console.error('Error fetching dockuments: ', error));
     });
 
+    const navigate = useNavigate();
+
+    const navigateCreate = () => {
+        navigate('/create');
+    }
+
+    const navigateReduct = () => {
+        navigate('/reduct/{id}');
+    }
+
+
     return(
         <div className="Main">
             <div className="RedactBar">
-                <button className="crateDock">Добавить</button>
-                <button className="redactDock">редактировать</button>
+                <button className="crateDock" onClick={navigateCreate}>Добавить</button>
+                <button className="redactDock" onClick={navigateReduct}>редактировать</button>
             </div>
             <div className="DocksTable">
                 <div className="InfoBar">
