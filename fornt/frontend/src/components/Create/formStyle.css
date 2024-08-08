@@ -32,4 +32,9 @@ select {
     font-size: 26px;
     padding-left: 20px;
     border-radius: 6px;
+    width: 30vw;
+}
+
+option {
+    color: black;
 }

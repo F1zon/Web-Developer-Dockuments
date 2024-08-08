@@ -1,7 +1,6 @@
 package com.example.webdev.service;
 
-import com.example.webdev.model.Contract;
-import com.example.webdev.model.SmallContract;
+import com.example.webdev.model.*;
 import com.example.webdev.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,42 @@ public class ContractServiceImpl {
         for (String s : results) {
             tmp = Arrays.asList(s.split(","));
             result.add(new SmallContract(tmp.get(0), tmp.get(1), tmp.get(2), tmp.get(3), tmp.get(4), tmp.get(5)));
+        }
+
+        return result;
+    }
+
+    public List<CustomerModel> readAllCustomers() {
+        List<String> request = repository.findAllCustomers();
+        List<CustomerModel> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new CustomerModel(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+        }
+
+        return result;
+    }
+
+    public List<PersonalModel> readAllPersonals() {
+        List<String> request = repository.findAllPersonals();
+        List<PersonalModel> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new PersonalModel(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+        }
+
+        return result;
+    }
+
+    public List<StatusModel> readAllStatuses() {
+        List<String> request = repository.findAllStatus();
+        List<StatusModel> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new StatusModel(Integer.parseInt(tmp.get(0)), tmp.get(1)));
         }
 
         return result;

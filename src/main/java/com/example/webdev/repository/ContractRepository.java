@@ -1,10 +1,9 @@
 package com.example.webdev.repository;
 
 import com.example.webdev.model.Contract;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.webdev.model.CustomerModel;
+import com.example.webdev.model.PersonalModel;
+import com.example.webdev.model.StatusModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,4 +46,12 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
             "c.states = ?7 where c.idContract = ?8")
     void setContractById(String obj, int cus, String exe, int files, int res, int res2, int dat, int st, int id);
 
+    @Query(value = "select id_customer, title from заказчики", nativeQuery = true)
+    List<String> findAllCustomers();
+
+    @Query(value = "select id_personal, fio from сотрудники", nativeQuery = true)
+    List<String> findAllPersonals();
+
+    @Query(value = "select id_status, title from статусы", nativeQuery = true)
+    List<String> findAllStatus();
 }

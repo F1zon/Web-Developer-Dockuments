@@ -1,7 +1,6 @@
 package com.example.webdev.controllers;
 
-import com.example.webdev.model.Contract;
-import com.example.webdev.model.SmallContract;
+import com.example.webdev.model.*;
 import com.example.webdev.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,15 +30,31 @@ public class MainController {
 
     /**
      * GET запрос для удобства заполнения информации
-     * @return CreateNewContractModel (объекты, персонал, статусы)
+     * @return CreateNewContractModel (Заказчики, персонал, статусы)
      */
-//    @GetMapping(value = "/info")
-//    public ResponseEntity<CreateNewContractModel> getInfoDb() {
-//        final CreateNewContractModel model = contractService.generateDbInfo();
-//        return model != null
-//                ? new ResponseEntity<>(model, HttpStatus.OK)
-//                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//    }
+    @GetMapping(value = "/info/customers")
+    public ResponseEntity<List<CustomerModel>> getInfoCustomer() {
+        final List<CustomerModel> models = contractService.readAllCustomers();
+        return models != null && !models.isEmpty()
+                ? new ResponseEntity<>(models, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/info/personal")
+    public ResponseEntity<List<PersonalModel>> getInfoPersonal() {
+        final List<PersonalModel> models = contractService.readAllPersonals();
+        return models != null && !models.isEmpty()
+                ? new ResponseEntity<>(models, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/info/statuses")
+    public ResponseEntity<List<StatusModel>> getInfoStatus() {
+        final List<StatusModel> models = contractService.readAllStatuses();
+        return models != null && !models.isEmpty()
+                ? new ResponseEntity<>(models, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
     /**
      * POST запрос для добавления нового договора

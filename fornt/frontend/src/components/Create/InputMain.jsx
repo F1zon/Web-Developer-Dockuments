@@ -6,15 +6,31 @@ import Header from "../Home/Headers/Headers";
 
 function InputMain() {
 
-    // Для получения GET информации с бэка
-    const [info, setInfo] = useState([]);
+    // GET запросы для получения заказчиков, персонала и статусов
+    // ###################################################################################
+
+    const [customers, setCust] = useState([]);
+    const [persons, setPers] = useState([]);
+    const [statuses, setStat] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/docks')
+        fetch('http://localhost:8080/info/customers')
+            .then(response => response.clone().json())
+            .then(data => setCust(data))
+            .catch(error => console.log('Error fetching customers: ', error));
+        
+        fetch('http://localhost:8080/info/personal')
             .then(response => response.json())
-            .then(data => setInfo(data))
-            .catch(error => console.error('Error fetching dockuments: ', error));
+            .then(data => setPers(data))
+            .catch(error => console.log('Error fetching personal: ', error));
+
+        fetch('http://localhost:8080/info/statuses')
+            .then(response => response.clone().json())
+            .then(data => setStat(data))
+            .catch(error => console.log('Error fetching statuses: ', error));
     });
+
+    // ###################################################################################
 
     // Для POST запроса
     const [data, setData] = useState({ objects: "", customer: "", executor: "", 
@@ -61,11 +77,11 @@ function InputMain() {
 
                 <label>
                     Заказчик:
-                    <select onChange={handleChange}>
-                        {info.map(inf => (
-                            <option value={inf.customer}>{inf.customer}</option>
-                        ))}
-                    </select>
+                    {customers.map(cus => (
+                        <select onChange={handleChange} key={cus.id}>
+                            <option value={customers.id}>{cus.title}</option>
+                        </select>
+                    ))}
                 </label>
 
                 <label>
@@ -80,19 +96,20 @@ function InputMain() {
                 <label>
                     Ответсвенный:
                     <select onChange={handleChange}>
-                        {info.map(inf => (
-                            <option value={data.responsible}>{inf.responsible}</option>
+                        {persons.map(per => (
+                            <option value={per.id}>{per.title}</option>
                         ))}
                     </select>
+                    
                 </label>
 
                 <label>
                     Ответсвенный-2:
-                    <input 
-                        type="text"
-                        name="responsible2"
-                        value={data.responsible2}
-                        onChange={handleChange} />
+                    <select onChange={handleChange}>
+                        {persons.map(per => (
+                            <option value={per.id}>{per.title}</option>
+                        ))}
+                    </select>
                 </label>
 
                 <label>
@@ -115,12 +132,14 @@ function InputMain() {
 
                 <label>
                     Статус:
-                    <input 
-                        type="text"
-                        name="states"
-                        value={data.states}
-                        onChange={handleChange} />
+                    <select onChange={handleChange}>
+                        {statuses.map(stat => (
+                            <option value={stat.id}>{stat.title}</option>
+                        ))}
+                    </select>
                 </label>
+
+                <button className="sub" onClick={handleSubmit}>Добавить</button>
             </form>
         </div>
     );
