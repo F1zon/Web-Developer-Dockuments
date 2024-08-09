@@ -72,12 +72,6 @@ public class ContractServiceImpl {
         return repository.findById(id).get();
     }
 
-    public void update(Contract model) {
-        repository.setContractById(model.getObjects(), model.getCustomer(), model.getExecutor(),
-                model.getFiles(), model.getResponsible(), model.getResponsible2(), model.getDates(),
-                model.getStates(), model.getStates());
-    }
-
     public void delete(Contract model) {
         repository.delete(model);
     }

@@ -62,22 +62,9 @@ public class MainController {
      * @return HTTP Статус
      */
     @PostMapping(value = "/created")
-    public ResponseEntity<Contract> addContract(@RequestBody Contract contract) {
+    public ResponseEntity<Contract> addContract(@RequestBody Contract contract, @RequestBody DateModel dateModel, @RequestBody FilesModel filesModel) {
         contractService.create(contract);
         return new ResponseEntity<>(contract, HttpStatus.CREATED);
-    }
-
-    /**
-     * PUT ответ, обновление записи в таблице
-     * @param id int id Договора
-     * @param contract Contract новая информация по договору
-     * @return HTTP Статус
-     */
-    @PutMapping(value = "/docks/{id}")
-    public ResponseEntity<Contract> updateContract(@PathVariable("id") int id, @RequestBody Contract contract) {
-        Contract contract1 = contractService.findById(id);
-        contractService.update(contract1);
-        return new ResponseEntity<>(contract1, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/docks/{id}")

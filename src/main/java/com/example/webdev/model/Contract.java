@@ -23,17 +23,11 @@ public class Contract {
     @Column(name = "executor")
     private String executor;
 
-    @Column(name = "files")
-    private int files;
-
     @Column(name = "responsible")
     private int responsible;
 
     @Column(name = "responsible_2")
     private int responsible2;
-
-    @Column(name = "dates")
-    private int dates;
 
     @Column(name = "states")
     private int states;

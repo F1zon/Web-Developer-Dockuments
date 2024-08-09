@@ -24,28 +24,6 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
                 nativeQuery = true)
     List<String> findAllContractsJoin();
 
-    /**
-     * Обновление информации по документа (Put в таблицу)
-     * @param obj String Объект
-     * @param cus int Заказчик
-     * @param exe String Исполнитель (Компания)
-     * @param files int Файлы
-     * @param res int Исполнитль (Персонал)
-     * @param res2 int Исполнитель 2 (Персонал)
-     * @param dat int Даты по договору
-     * @param st int Статус договора
-     * @param id int id изменяемого договора
-     */
-    @Modifying
-    @Query("update Contract c set c.objects = ?1," +
-            "c.executor = ?2," +
-            "c.files = ?3," +
-            "c.responsible = ?4," +
-            "c.responsible2 = ?5," +
-            "c.dates = ?6," +
-            "c.states = ?7 where c.idContract = ?8")
-    void setContractById(String obj, int cus, String exe, int files, int res, int res2, int dat, int st, int id);
-
     @Query(value = "select id_customer, title from заказчики", nativeQuery = true)
     List<String> findAllCustomers();
 
