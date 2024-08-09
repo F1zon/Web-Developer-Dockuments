@@ -1,20 +1,32 @@
 package com.example.webdev.model;
 
-import lombok.Data;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.*;
 
-@Data
+import java.sql.Date;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "даты")
 public class DateModel {
-    private String dateStart;
-    private String dateEnd;
-    private String description;
-    private String stage;
-    private int idContract;
+    @Id
+    @Column(name = "id_dat")
+    private int id;
 
-    public DateModel(int idContract, String stage, String description, String dateEnd, String dateStart) {
-        this.idContract = idContract;
-        this.stage = stage;
-        this.description = description;
-        this.dateEnd = dateEnd;
-        this.dateStart = dateStart;
-    }
+    @Column(name = "date_start")
+    private Date dateStart;
+    @Column(name = "date_end")
+    private Date dateEnd;
+    @Column(name = "description")
+    private String description;
+    @Column(name = "stages")
+    private String stage;
+    @Column(name = "contract")
+    private int idContract;
 }

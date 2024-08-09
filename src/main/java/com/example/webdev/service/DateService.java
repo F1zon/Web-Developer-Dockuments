@@ -12,6 +12,7 @@ public class DateService {
     @Autowired
     private DateRepository dateRepository;
 
-    @Transactional
-
+    public void createData(DateModel dateModel) {
+        dateRepository.createDate(dateModel);
+    }
 }
