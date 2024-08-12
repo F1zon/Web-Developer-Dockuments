@@ -1,5 +1,6 @@
-package com.example.webdev.model;
+package com.example.webdev.db.dao;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,19 +11,17 @@ import java.sql.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "даты")
-public class DateModel {
+public class DateDao {
     @Id
     @Column(name = "id_dat")
     private int id;
 
     @Column(name = "date_start")
-    private Date dateStart;
+    private String dateStart;
     @Column(name = "date_end")
-    private Date dateEnd;
+    private String dateEnd;
     @Column(name = "description")
     private String description;
     @Column(name = "stages")

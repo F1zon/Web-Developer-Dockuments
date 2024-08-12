@@ -1,16 +1,12 @@
 package com.example.webdev.repository;
 
-import com.example.webdev.model.Contract;
-import com.example.webdev.model.CustomerModel;
-import com.example.webdev.model.PersonalModel;
-import com.example.webdev.model.StatusModel;
+import com.example.webdev.db.dao.ContractDao;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ContractRepository extends JpaRepository<Contract, Integer> {
+public interface ContractRepository extends JpaRepository<ContractDao, Integer> {
 
     /**
      * Укороченный запрос для главной страницы
@@ -32,4 +28,7 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     @Query(value = "select id_status, title from статусы", nativeQuery = true)
     List<String> findAllStatus();
+
+    @Query(value = "select nextval('id_contract')", nativeQuery = true)
+    int getNextContactId();
 }

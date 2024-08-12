@@ -1,4 +1,4 @@
-package com.example.webdev.model;
+package com.example.webdev.db.dao;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "договоры")
-public class Contract {
+public class ContractDao {
     @Id
     @Column(name = "id_contract")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

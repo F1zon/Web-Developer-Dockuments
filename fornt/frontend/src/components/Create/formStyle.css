@@ -38,3 +38,17 @@ select {
 option {
     color: black;
 }
+
+.sub {
+    width: 207px;
+    height: 42px;
+    background: #2DD1F5;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+}
+.sub:hover {
+    background: #208ea7;
+}

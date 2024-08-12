@@ -1,9 +1,9 @@
-package com.example.webdev.model;
+package com.example.webdev.db.dto;
 
 import lombok.Data;
 
 @Data
-public class SmallContract {
+public class SmallContractDto {
 //    Long idContract;
     String objects;
     String customer;
@@ -12,7 +12,7 @@ public class SmallContract {
     String department;
     String states;
 
-    public SmallContract(String objects, String customer, String executor, String responsible, String department, String states) {
+    public SmallContractDto(String objects, String customer, String executor, String responsible, String department, String states) {
 //        this.idContract = Long.valueOf(idContract);
         this.objects = objects;
         this.customer = customer;

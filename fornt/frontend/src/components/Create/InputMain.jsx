@@ -36,6 +36,8 @@ function InputMain() {
     const [data, setData] = useState({ objects: "", customer: "", executor: "", 
         files: "", responsible: "", responsible2: "", datesStart: "", datesEnd: "", states: ""
      });
+    const [fileData, setFilesData] = useState({file: ""});
+    const [dateData, setDateData] = useState({datesStart: "", datesEnd: "", description: "", stage: ""});
     const [response, setResponse] = useState("");
 
     const handleChange = (event) => {
@@ -82,6 +84,15 @@ function InputMain() {
                             <option value={customers.id}>{cus.title}</option>
                         </select>
                     ))}
+                </label>
+
+                <label>
+                    Описание
+                    <input
+                        type="text"
+                        name="description"
+                        value={dateData.description}
+                        onChange={handleChange}></input>
                 </label>
 
                 <label>
