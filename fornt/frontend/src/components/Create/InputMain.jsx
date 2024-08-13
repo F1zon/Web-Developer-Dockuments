@@ -34,7 +34,7 @@ function InputMain() {
 
     // Для POST запроса
     const [data, setData] = useState({ objects: "", customer: "", executor: "", 
-        files: "", responsible: "", responsible2: "", datesStart: "", datesEnd: "", states: ""
+        files: "", responsible: "", responsible2: "", states: ""
      });
     const [fileData, setFilesData] = useState({file: ""});
     const [dateData, setDateData] = useState({datesStart: "", datesEnd: "", description: "", stage: ""});
@@ -46,14 +46,13 @@ function InputMain() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios
-            .post("http://localhost:8080/created", data)
-            .then((response) => {
-                setResponse(response.data);
-            })
-            .catch((error) => {
-                console.log(error);                
-            });
+        const formData = new FormData();
+        formData.append('file', fileData);
+        formData.append('date', dateData);
+        formData.append('contract', data);
+        console.log('formData: ', formData);
+        fetch('http://localhost:8080/created', {method: 'POST', body: formData})
+            .then(response => console.log(response));
     };
 
     return (
@@ -88,11 +87,11 @@ function InputMain() {
 
                 <label>
                     Описание
-                    <input
+                    <input 
                         type="text"
-                        name="description"
+                        name="descr"
                         value={dateData.description}
-                        onChange={handleChange}></input>
+                        onChange={handleChange} />
                 </label>
 
                 <label>
@@ -103,7 +102,6 @@ function InputMain() {
                         value={data.files}
                         onChange={handleChange} />
                 </label>
-                {/* Выяснить процесс выборки в select */}
                 <label>
                     Ответсвенный:
                     <select onChange={handleChange}>
