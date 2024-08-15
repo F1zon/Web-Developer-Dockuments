@@ -11,8 +11,8 @@ import java.sql.Date;
 @Data
 public class DateDto {
      int id;
-     Date dateStart;
-     Date dateEnd;
+     String dateStart;
+     String dateEnd;
      String description;
      String stages;
      int contract;

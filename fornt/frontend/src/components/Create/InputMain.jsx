@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { BrowserRouter as Router, Switch, Route, Link, useNavigate } from 'react-router-dom';
 import './InputFild.css'
 
 import Header from "../Home/Headers/Headers";
@@ -34,25 +34,37 @@ function InputMain() {
 
     // Для POST запроса
     const [data, setData] = useState({ objects: "", customer: "", executor: "", 
-        files: "", responsible: "", responsible2: "", states: ""
-     });
-    const [fileData, setFilesData] = useState({file: ""});
-    const [dateData, setDateData] = useState({datesStart: "", datesEnd: "", description: "", stage: ""});
+        responsible: "", responsible2: "", states: ""});
+    const [fileData, setFilesData] = useState({fileName: ""});
+    const [dateData, setDateData] = useState({dateStart: "", dateEnd: "", description: "", stage: ""});
     const [response, setResponse] = useState("");
 
     const handleChange = (event) => {
         setData({ ...data, [event.target.name]: event.target.value });
+        // setFilesData({ ...fileData, [event.target.name]: event.target.value });
     };
+
+    const handleChangeDate = (event) => {
+        setDateData({ ...dateData, [event.target.name]: event.target.value });
+    }
+
+    const handleChangeFiles = (event) => {
+        setFilesData({ ...fileData, [event.target.name]: event.target.value });
+    }
+
+    const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData();
-        formData.append('file', fileData);
-        formData.append('date', dateData);
         formData.append('contract', data);
+        formData.append('date', dateData);
+        formData.append('file', fileData);
         console.log('formData: ', formData);
         fetch('http://localhost:8080/created', {method: 'POST', body: formData})
             .then(response => console.log(response));
+        
+        navigate("/");
     };
 
     return (
@@ -80,7 +92,7 @@ function InputMain() {
                     Заказчик:
                     {customers.map(cus => (
                         <select onChange={handleChange} key={cus.id}>
-                            <option value={customers.id}>{cus.title}</option>
+                            <option value={customers.title}>{cus.title}</option>
                         </select>
                     ))}
                 </label>
@@ -89,9 +101,18 @@ function InputMain() {
                     Описание
                     <input 
                         type="text"
-                        name="descr"
+                        name="description"
                         value={dateData.description}
-                        onChange={handleChange} />
+                        onChange={handleChangeDate} />
+                </label>
+
+                <label>
+                    шаг
+                    <input
+                        type="text"
+                        name="stage"
+                        value={dateData.stage}
+                        onChange={handleChangeDate} />
                 </label>
 
                 <label>
@@ -100,13 +121,13 @@ function InputMain() {
                         type="file"
                         name="files"
                         value={data.files}
-                        onChange={handleChange} />
+                        onChange={handleChangeFiles} />
                 </label>
                 <label>
                     Ответсвенный:
                     <select onChange={handleChange}>
                         {persons.map(per => (
-                            <option value={per.id}>{per.title}</option>
+                            <option value={per.title}>{per.title}</option>
                         ))}
                     </select>
                     
@@ -116,7 +137,7 @@ function InputMain() {
                     Ответсвенный-2:
                     <select onChange={handleChange}>
                         {persons.map(per => (
-                            <option value={per.id}>{per.title}</option>
+                            <option value={per.title}>{per.title}</option>
                         ))}
                     </select>
                 </label>

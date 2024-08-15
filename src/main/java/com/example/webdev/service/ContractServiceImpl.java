@@ -1,10 +1,8 @@
 package com.example.webdev.service;
 
 import com.example.webdev.db.dao.ContractDao;
-import com.example.webdev.db.dto.CustomerDto;
-import com.example.webdev.db.dto.PersonalDto;
-import com.example.webdev.db.dto.SmallContractDto;
-import com.example.webdev.db.dto.StatusDto;
+import com.example.webdev.db.dto.*;
+import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,4 +82,20 @@ public class ContractServiceImpl {
         repository.delete(model);
     }
 
+    public void createContract(ContractModel model) {
+        ContractDao contractDao = new ContractDao();
+        contractDao.setObjects(model.getObjects());
+        contractDao.setExecutor(model.getExecutor());
+
+        contractDao.setCustomer(repository.findCustomerByTitle(model.getCustomer()));
+        contractDao.setResponsible(repository.findPersonalByFio(model.getResponsible()));
+        if (model.getResponsible().equals(model.getResponsible2())) {
+            contractDao.setResponsible2(contractDao.getResponsible());
+        } else {
+            contractDao.setResponsible2(repository.findPersonalByFio(model.getResponsible2()));
+        }
+        contractDao.setStates(repository.findStageByTitle(model.getStates()));
+
+        repository.save(contractDao);
+    }
 }

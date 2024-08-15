@@ -1,14 +1,10 @@
 package com.example.webdev.controllers;
 
 import com.example.webdev.db.dao.ContractDao;
-import com.example.webdev.db.dao.DateDao;
-import com.example.webdev.db.dao.FilesDao;
-import com.example.webdev.db.dto.CustomerDto;
-import com.example.webdev.db.dto.PersonalDto;
-import com.example.webdev.db.dto.SmallContractDto;
-import com.example.webdev.db.dto.StatusDto;
-import com.example.webdev.repository.DateRepository;
-import com.example.webdev.repository.FilesRepository;
+import com.example.webdev.db.dto.*;
+import com.example.webdev.db.model.ContractModel;
+import com.example.webdev.db.model.DateModel;
+import com.example.webdev.db.model.FileModel;
 import com.example.webdev.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,20 +64,18 @@ public class MainController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    /**
-     * POST запрос для добавления нового договора
-     * @param contractDao Новый договор
-     * @return HTTP Статус
-     */
     @PostMapping(value = "/created")
-    public ResponseEntity<ContractDao> addContract(@RequestBody ContractDao contractDao, @RequestBody DateDao dateDao, @RequestBody FilesDao filesDao) {
-        int idContract = contractService.getCreateContractId();
-        contractService.create(contractDao);
+    public ResponseEntity<?> addContract(@ModelAttribute("contract") ContractModel contractModel,
+                                                   @ModelAttribute("date") DateModel dateModel,
+                                                   @ModelAttribute("file") FileModel fileModel) {
+        int idContract = contractService.getCreateContractId() + 1;
+        contractService.createContract(contractModel);
+        fileService.createFileDao(fileModel, idContract);
+        dateService.createDateDao(dateModel, idContract);
 
-        fileService.create(filesDao, idContract);
-        dateService.create(dateDao, idContract);
 
-        return new ResponseEntity<>(contractDao, HttpStatus.CREATED);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/docks/{id}")
