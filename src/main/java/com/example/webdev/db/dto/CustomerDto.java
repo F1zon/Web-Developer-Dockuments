@@ -9,10 +9,10 @@ import lombok.Setter;
 @Data
 public class CustomerDto {
     int id;
-    String title;
+    String name;
 
-    public CustomerDto(int id, String title) {
+    public CustomerDto(int id, String name) {
         this.id = id;
-        this.title = title;
+        this.name = name;
     }
 }

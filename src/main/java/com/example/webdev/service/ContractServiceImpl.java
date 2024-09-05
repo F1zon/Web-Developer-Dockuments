@@ -70,6 +70,18 @@ public class ContractServiceImpl {
         return result;
     }
 
+    public List<DepartmentDto> readAllDepartments() {
+        List<String> request = repository.findAllDepartments();
+        List<DepartmentDto> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new DepartmentDto(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+        }
+
+        return result;
+    }
+
     public void create(ContractDao model) {
         repository.save(model);
     }

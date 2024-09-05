@@ -64,6 +64,14 @@ public class MainController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/info/dep")
+    public ResponseEntity<List<DepartmentDto>> getInfoDep() {
+        final List<DepartmentDto> models = contractService.readAllDepartments();
+        return models != null && !models.isEmpty()
+                ? new ResponseEntity<>(models, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping(value = "/created")
     public ResponseEntity<?> addContract(@ModelAttribute("contract") ContractModel contractModel,
                                                    @ModelAttribute("date") DateModel dateModel,

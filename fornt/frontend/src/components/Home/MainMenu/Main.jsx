@@ -27,7 +27,7 @@ function Main() {
         <div className="Main">
             <div className="RedactBar">
                 <button className="crateDock" onClick={navigateCreate}>Добавить</button>
-                <button className="redactDock" onClick={navigateReduct}>редактировать</button>
+                <button className="redactDock" onClick={navigateReduct}>Редактировать</button>
             </div>
             <div className="DocksTable">
                 <div className="InfoBar">
