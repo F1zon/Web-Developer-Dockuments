@@ -1,0 +1,50 @@
+.Menu {
+    display: grid;
+    grid-template-rows: 1fr 8fr 1fr;
+    font-family: 'Montserrat';
+    background-color: #121832;
+}
+
+.headText {
+    display: grid;
+    font-size: 32px;
+    font-weight: 700;
+    word-wrap: break-word;
+    grid-template-areas: "a t";
+    align-items: center;
+}
+.D {
+    grid-area: a;
+    text-align: right;
+    color: white;
+}
+.T {
+    grid-area: t;
+    color: #06D2FF;
+}
+
+.ButtonList, .exit {
+    display: grid;
+    padding-left: 50px;
+    padding-right: 50px;
+    align-items: center;
+    word-wrap: break-word;
+}
+.butRow {
+    display: grid;
+    grid-template: ". bi bt . . .";
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 6vh;
+    align-items: center;
+}
+.ButImg {
+    grid-area: bi;
+    width: 2.5vw;
+}
+.ButText {
+    grid-area: bt;
+    color: #06D2FF;
+    font-size: 14px;
+    font-weight: 400;
+}

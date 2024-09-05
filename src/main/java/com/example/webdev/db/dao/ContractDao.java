@@ -1,6 +1,7 @@
-package com.example.webdev.model;
+package com.example.webdev.db.dao;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "договоры")
-public class Contract {
+public class ContractDao {
     @Id
     @Column(name = "id_contract")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,17 +24,11 @@ public class Contract {
     @Column(name = "executor")
     private String executor;
 
-    @Column(name = "files")
-    private int files;
-
     @Column(name = "responsible")
     private int responsible;
 
     @Column(name = "responsible_2")
     private int responsible2;
-
-    @Column(name = "dates")
-    private int dates;
 
     @Column(name = "states")
     private int states;

@@ -1,6 +1,8 @@
 package com.example.webdev.service;
 
-import com.example.webdev.model.Contract;
+import com.example.webdev.db.dao.ContractDao;
+import com.example.webdev.db.dto.*;
+import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,49 +17,97 @@ public class ContractServiceImpl {
     @Autowired
     private ContractRepository repository;
 
-    public List<List<String>> readAll() {
-        List<String> contracts = repository.findAllContractsJoin();
-        List<List<String>> list = new ArrayList<>();
-        for (String contract : contracts) {
-            list.add(Arrays.asList(contract.split(",")));
+    public int getCreateContractId() {
+        return repository.getNextContactId();
+    }
+
+    public List<SmallContractDto> readAll() {
+        List<String> results = repository.findAllContractsJoin();
+        List<String> tmp = new ArrayList<>();
+
+        List<SmallContractDto> result = new ArrayList<>();
+        for (String s : results) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new SmallContractDto(tmp.get(0), tmp.get(1), tmp.get(2), tmp.get(3), tmp.get(4), tmp.get(5)));
         }
 
-        return list;
+        return result;
     }
 
-//    @Override
-    public void create(Contract model) {
+    public List<CustomerDto> readAllCustomers() {
+        List<String> request = repository.findAllCustomers();
+        List<CustomerDto> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new CustomerDto(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+        }
+
+        return result;
+    }
+
+    public List<PersonalDto> readAllPersonals() {
+        List<String> request = repository.findAllPersonals();
+        List<PersonalDto> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new PersonalDto(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+        }
+
+        return result;
+    }
+
+    public List<StatusDto> readAllStatuses() {
+        List<String> request = repository.findAllStatus();
+        List<StatusDto> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new StatusDto(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+        }
+
+        return result;
+    }
+
+    public List<DepartmentDto> readAllDepartments() {
+        List<String> request = repository.findAllDepartments();
+        List<DepartmentDto> result = new ArrayList<>();
+        List<String> tmp = new ArrayList<>();
+        for (String s : request) {
+            tmp = Arrays.asList(s.split(","));
+            result.add(new DepartmentDto(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+        }
+
+        return result;
+    }
+
+    public void create(ContractDao model) {
         repository.save(model);
     }
-//
-//    @Override
-//    public List<Contract> readAll() {
-//        return repository.findAll();
-//    }
-//
-//    @Override
-//    public Contract read(int id) {
-//        return repository.getReferenceById(id);
-//    }
-//
-//    @Override
-//    public boolean update(Contract model, int id) {
-//        if (repository.existsById(id)) {
-//            model.setIdContract(id);
-//            repository.save(model);
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean delete(int id) {
-//        if (repository.existsById(id)) {
-//            repository.deleteById(id);
-//            return true;
-//        }
-//
-//        return false;
-//    }
+
+    public ContractDao findById(int id) {
+        return repository.findById(id).get();
+    }
+
+    public void delete(ContractDao model) {
+        repository.delete(model);
+    }
+
+    public void createContract(ContractModel model) {
+        ContractDao contractDao = new ContractDao();
+        contractDao.setObjects(model.getObjects());
+        contractDao.setExecutor(model.getExecutor());
+
+        contractDao.setCustomer(repository.findCustomerByTitle(model.getCustomer()));
+        contractDao.setResponsible(repository.findPersonalByFio(model.getResponsible()));
+        if (model.getResponsible().equals(model.getResponsible2())) {
+            contractDao.setResponsible2(contractDao.getResponsible());
+        } else {
+            contractDao.setResponsible2(repository.findPersonalByFio(model.getResponsible2()));
+        }
+        contractDao.setStates(repository.findStageByTitle(model.getStates()));
+
+        repository.save(contractDao);
+    }
 }

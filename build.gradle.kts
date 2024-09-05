@@ -28,6 +28,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.2.5")
+
+//    Отложенно до создания полноценной бизнес логики
+//    implementation("org.springframework.boot:spring-boot-starter-security")
+//    testImplementation("org.springframework.security:spring-security-test")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
@@ -36,6 +40,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // https://mvnrepository.com/artifact/org.modelmapper.extensions/modelmapper-spring
+    implementation("org.modelmapper.extensions:modelmapper-spring:3.2.0")
 }
 
 tasks.withType<Test> {
