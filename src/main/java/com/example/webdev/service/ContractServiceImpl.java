@@ -17,6 +17,10 @@ public class ContractServiceImpl {
     @Autowired
     private ContractRepository repository;
 
+    public List<ContractDao> findAll() {
+        return repository.findAll();
+    }
+
     public int getCreateContractId() {
         return repository.getNextContactId();
     }
@@ -52,7 +56,7 @@ public class ContractServiceImpl {
         List<String> tmp = new ArrayList<>();
         for (String s : request) {
             tmp = Arrays.asList(s.split(","));
-            result.add(new PersonalDto(Integer.parseInt(tmp.get(0)), tmp.get(1)));
+            result.add(new PersonalDto(Integer.parseInt(tmp.get(0)), tmp.get(1), Integer.parseInt(tmp.get(2))));
         }
 
         return result;
@@ -94,20 +98,7 @@ public class ContractServiceImpl {
         repository.delete(model);
     }
 
-    public void createContract(ContractModel model) {
-        ContractDao contractDao = new ContractDao();
-        contractDao.setObjects(model.getObjects());
-        contractDao.setExecutor(model.getExecutor());
-
-        contractDao.setCustomer(repository.findCustomerByTitle(model.getCustomer()));
-        contractDao.setResponsible(repository.findPersonalByFio(model.getResponsible()));
-        if (model.getResponsible().equals(model.getResponsible2())) {
-            contractDao.setResponsible2(contractDao.getResponsible());
-        } else {
-            contractDao.setResponsible2(repository.findPersonalByFio(model.getResponsible2()));
-        }
-        contractDao.setStates(repository.findStageByTitle(model.getStates()));
-
-        repository.save(contractDao);
+    public ContractDao save(ContractDao model) {
+        return repository.save(model);
     }
 }

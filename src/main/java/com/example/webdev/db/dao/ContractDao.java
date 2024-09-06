@@ -1,18 +1,17 @@
 package com.example.webdev.db.dao;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "договоры")
 public class ContractDao {
     @Id
     @Column(name = "id_contract")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int idContract;
 
     @Column(name = "objects")

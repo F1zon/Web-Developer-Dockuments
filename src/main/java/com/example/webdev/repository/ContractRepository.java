@@ -23,7 +23,7 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
     @Query(value = "select id, name from заказчики", nativeQuery = true)
     List<String> findAllCustomers();
 
-    @Query(value = "select id, name from сотрудники", nativeQuery = true)
+    @Query(value = "select id, name, department from сотрудники", nativeQuery = true)
     List<String> findAllPersonals();
 
     @Query(value = "select id, name from статусы", nativeQuery = true)

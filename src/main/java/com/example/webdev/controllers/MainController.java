@@ -6,6 +6,8 @@ import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.db.model.DateModel;
 import com.example.webdev.db.model.FileModel;
 import com.example.webdev.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ public class MainController {
     private final ContractServiceImpl contractService;
     private final DateService dateService;
     private final FileService fileService;
+    private final Logger log = LoggerFactory.getLogger(MainController.class);
 
     @Autowired
     public MainController(ContractServiceImpl contractService, DateService dateService, FileService fileService) {
@@ -72,18 +75,11 @@ public class MainController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/created")
-    public ResponseEntity<?> addContract(@ModelAttribute("contract") ContractModel contractModel,
-                                                   @ModelAttribute("date") DateModel dateModel,
-                                                   @ModelAttribute("file") FileModel fileModel) {
-        int idContract = contractService.getCreateContractId() + 1;
-        contractService.createContract(contractModel);
-        fileService.createFileDao(fileModel, idContract);
-        dateService.createDateDao(dateModel, idContract);
-
-
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping("/create/contract")
+    public ResponseEntity<ContractDao> createContract(@RequestBody ContractDao dao) {
+        log.info("Create contract {}", dao);
+        ContractDao result = contractService.save(dao);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/docks/{id}")
