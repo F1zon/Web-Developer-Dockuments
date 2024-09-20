@@ -11,8 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DateModel {
     String dateStart;
-    String dateEnd;
     String description;
-    String stage;
-    int idContract;
 }

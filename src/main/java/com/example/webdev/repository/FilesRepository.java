@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FilesRepository extends JpaRepository<FilesDao, Long> {
+
+    @Query(value = "SELECT MAX(id_file) + 1 FROM файлы", nativeQuery = true)
+    int getNexValId();
 }

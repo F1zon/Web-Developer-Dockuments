@@ -11,5 +11,4 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FileModel {
     String fileName;
-    int idContact;
 }

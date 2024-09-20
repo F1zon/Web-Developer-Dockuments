@@ -21,9 +21,10 @@ public class FilesDao {
     @Column(name = "contract")
     private int idContact;
 
-    public FilesDao(String name, int createContractId) {
+    public FilesDao(String name, int idContact, int id) {
         this.fileName = name;
-        this.idContact = createContractId;
+        this.idContact = idContact;
+        this.id = id;
     }
 
     public FilesDao() {

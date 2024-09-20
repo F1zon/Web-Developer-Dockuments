@@ -1,6 +1,7 @@
 package com.example.webdev.service;
 
 import com.example.webdev.db.dao.DateDao;
+import com.example.webdev.db.model.DateModel;
 import com.example.webdev.repository.DateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,12 @@ public class DateService {
     @Autowired
     private DateRepository dateRepository;
 
+    public DateDao createDateDao(DateModel model, int idContract) {
+        return new DateDao(model.getDateStart(), model.getDescription(), idContract, dateRepository.getNexValId());
+    }
+
     @Transactional
-    public void save(DateDao dao) {
-        dateRepository.save(dao);
+    public void save(DateModel model, int idContract) {
+        dateRepository.save(createDateDao(model, idContract));
     }
 }

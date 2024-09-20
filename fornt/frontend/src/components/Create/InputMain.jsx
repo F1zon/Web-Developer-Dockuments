@@ -119,7 +119,7 @@ function InputMain() {
     // ################################################################################# POST
 
     const handleSubmit = async => {
-        // postDate();
+        postDate();
         // postFile();
         postContract();
 

@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DateRepository extends JpaRepository<DateDao, Long> {
+    @Query(value = "SELECT MAX(id_dat) + 1 FROM даты", nativeQuery = true)
+    int getNexValId();
+
 }

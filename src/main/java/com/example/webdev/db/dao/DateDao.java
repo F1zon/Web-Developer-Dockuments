@@ -25,10 +25,11 @@ public class DateDao {
     @Column(name = "contract")
     private int idContract;
 
-    public DateDao(String start, String description, int idContract) {
+    public DateDao(String start, String description, int idContract, int id) {
         this.dateStart = start;
         this.description = description;
         this.idContract = idContract;
+        this.id = id;
     }
 
     public DateDao() {

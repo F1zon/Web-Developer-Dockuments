@@ -98,7 +98,12 @@ public class ContractServiceImpl {
         repository.delete(model);
     }
 
-    public ContractDao save(ContractDao model) {
-        return repository.save(model);
+    public ContractDao creteDao(ContractModel model) {
+        return new ContractDao(model.getObjects(), model.getCustomer(), model.getExecutor(),
+                model.getResponsible(), model.getResponsible2(), model.getStates(), repository.getNexValId());
+    }
+
+    public void save(ContractModel model) {
+        repository.save(creteDao(model));
     }
 }

@@ -78,26 +78,22 @@ public class MainController {
     }
 
     @PostMapping("/create/contract")
-    public ResponseEntity<?> createContract(@RequestParam("objects") String objects, @RequestParam("customer") int customer,
-                                                      @RequestParam("executor") String executor, @RequestParam("responsible") int responsible,
-                                                      @RequestParam("responsible2") int responsible2, @RequestParam("states") int states) {
+    public ResponseEntity<?> createContract(@RequestBody ContractModel model) {
         log.info("Created contract.....");
 
-        ContractDao dao = new ContractDao(objects, customer, executor, responsible, responsible2, states);
-        contractService.save(dao);
+        contractService.save(model);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/create/date")
-    public ResponseEntity<DateDao> createDate(@RequestParam("dateStart") String start, @RequestParam("description") String description) {
-        DateDao dao = new DateDao(start, description, contractService.getCreateContractId());
-        dateService.save(dao);
+    public ResponseEntity<DateDao> createDate(@RequestBody DateModel model) {
+        dateService.save(model, contractService.getCreateContractId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/create/fileWay")
-    public ResponseEntity<?> creteFile(@RequestParam("fileName") String name) {
-        FilesDao dao = new FilesDao(name, contractService.getCreateContractId());
+    public ResponseEntity<?> creteFile(@RequestBody FileModel model) {
+        fileService.save(model, contractService.getCreateContractId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

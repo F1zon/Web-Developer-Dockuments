@@ -8,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 public class ContractModel {
     String objects;
-    String customer;
+    int customer;
     String executor;
-    String responsible;
-    String responsible2;
-    String states;
+    int responsible;
+    int responsible2;
+    int states;
 }

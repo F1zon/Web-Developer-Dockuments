@@ -44,4 +44,7 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
 
     @Query(value = "select id from статусы where name = ?1", nativeQuery = true)
     int findStageByTitle(String title);
+
+    @Query(value = "SELECT MAX(id_contract) + 1 FROM договоры", nativeQuery = true)
+    int getNexValId();
 }
