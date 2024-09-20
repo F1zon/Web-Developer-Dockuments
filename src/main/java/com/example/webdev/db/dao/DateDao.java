@@ -20,12 +20,18 @@ public class DateDao {
 
     @Column(name = "date_start")
     private String dateStart;
-    @Column(name = "date_end")
-    private String dateEnd;
     @Column(name = "description")
     private String description;
-    @Column(name = "stages")
-    private String stage;
     @Column(name = "contract")
     private int idContract;
+
+    public DateDao(String start, String description, int idContract) {
+        this.dateStart = start;
+        this.description = description;
+        this.idContract = idContract;
+    }
+
+    public DateDao() {
+
+    }
 }

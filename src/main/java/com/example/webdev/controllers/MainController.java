@@ -1,6 +1,8 @@
 package com.example.webdev.controllers;
 
 import com.example.webdev.db.dao.ContractDao;
+import com.example.webdev.db.dao.DateDao;
+import com.example.webdev.db.dao.FilesDao;
 import com.example.webdev.db.dto.*;
 import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.db.model.DateModel;
@@ -76,10 +78,27 @@ public class MainController {
     }
 
     @PostMapping("/create/contract")
-    public ResponseEntity<ContractDao> createContract(@RequestBody ContractDao dao) {
-        log.info("Create contract {}", dao);
-        ContractDao result = contractService.save(dao);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    public ResponseEntity<?> createContract(@RequestParam("objects") String objects, @RequestParam("customer") int customer,
+                                                      @RequestParam("executor") String executor, @RequestParam("responsible") int responsible,
+                                                      @RequestParam("responsible2") int responsible2, @RequestParam("states") int states) {
+        log.info("Created contract.....");
+
+        ContractDao dao = new ContractDao(objects, customer, executor, responsible, responsible2, states);
+        contractService.save(dao);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/create/date")
+    public ResponseEntity<DateDao> createDate(@RequestParam("dateStart") String start, @RequestParam("description") String description) {
+        DateDao dao = new DateDao(start, description, contractService.getCreateContractId());
+        dateService.save(dao);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/create/fileWay")
+    public ResponseEntity<?> creteFile(@RequestParam("fileName") String name) {
+        FilesDao dao = new FilesDao(name, contractService.getCreateContractId());
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/docks/{id}")

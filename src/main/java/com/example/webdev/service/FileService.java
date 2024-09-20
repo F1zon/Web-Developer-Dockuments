@@ -14,12 +14,8 @@ public class FileService {
     @Autowired
     private FilesRepository fileRepository;
 
-    public void createFileDao(FileModel files, int idContract) {
-        FilesDao filesDao = new FilesDao();
-        filesDao.setIdContact(idContract);
-        filesDao.setFileName(files.getFileName());
-
-        fileRepository.save(filesDao);
+    public void save(FilesDao file) {
+        fileRepository.save(file);
     }
 
 }

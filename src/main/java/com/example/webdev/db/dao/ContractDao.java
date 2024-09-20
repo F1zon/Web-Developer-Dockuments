@@ -31,4 +31,13 @@ public class ContractDao {
 
     @Column(name = "states")
     private int states;
+
+    public ContractDao(String objects, int customer, String executor, int responsible, int responsible2, int states) {
+        this.objects = objects;
+        this.customer = customer;
+        this.executor = executor;
+        this.responsible = responsible;
+        this.responsible2 = responsible2;
+        this.states = states;
+    }
 }

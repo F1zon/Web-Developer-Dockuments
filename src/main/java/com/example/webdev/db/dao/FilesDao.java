@@ -20,4 +20,13 @@ public class FilesDao {
     private String fileName;
     @Column(name = "contract")
     private int idContact;
+
+    public FilesDao(String name, int createContractId) {
+        this.fileName = name;
+        this.idContact = createContractId;
+    }
+
+    public FilesDao() {
+
+    }
 }
