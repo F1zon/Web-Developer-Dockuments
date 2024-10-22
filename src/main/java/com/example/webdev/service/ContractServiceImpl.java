@@ -6,6 +6,7 @@ import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,6 +104,7 @@ public class ContractServiceImpl {
                 model.getResponsible(), model.getResponsible2(), model.getStates(), repository.getNexValId());
     }
 
+    @Transactional
     public void save(ContractModel model) {
         repository.save(creteDao(model));
     }

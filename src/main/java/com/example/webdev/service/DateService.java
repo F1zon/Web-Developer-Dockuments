@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class DateService {
 
@@ -14,7 +16,7 @@ public class DateService {
     private DateRepository dateRepository;
 
     public DateDao createDateDao(DateModel model, int idContract) {
-        return new DateDao(model.getDateStart(), model.getDescription(), idContract, dateRepository.getNexValId());
+        return new DateDao(model.getDateStart(), model.getDescription(), idContract, Optional.of(dateRepository.getNexValId()).orElse(1));
     }
 
     @Transactional

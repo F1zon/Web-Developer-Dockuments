@@ -8,13 +8,18 @@ import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.db.model.DateModel;
 import com.example.webdev.db.model.FileModel;
 import com.example.webdev.service.*;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
@@ -82,18 +87,29 @@ public class MainController {
         log.info("Created contract.....");
 
         contractService.save(model);
+        log.info("Contract is CREATE!");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/create/date")
     public ResponseEntity<DateDao> createDate(@RequestBody DateModel model) {
+        log.info("Created dates.....");
+
         dateService.save(model, contractService.getCreateContractId());
+        log.info("Date is CREATE!");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/create/fileWay")
-    public ResponseEntity<?> creteFile(@RequestBody FileModel model) {
-        fileService.save(model, contractService.getCreateContractId());
+    public ResponseEntity<?> creteFile(@RequestBody MultipartFile files) {
+
+//        try {
+//            List<FileUploadResponse>
+//        } catch (Exception e) {
+//            throw new RuntimeException(e.getMessage());
+//        }
+
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

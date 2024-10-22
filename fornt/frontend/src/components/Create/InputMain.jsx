@@ -35,7 +35,7 @@ function InputMain() {
     };
 
     const initialFormStateFiles = {
-        fileName: ''
+        fileName: []
     };
 
     const initialFormStateDates = {
@@ -119,17 +119,21 @@ function InputMain() {
     // ################################################################################# POST
 
     const handleSubmit = async => {
-        postDate();
-        // postFile();
         postContract();
+        // postDate();
+        // postFile();
 
         alert("Контракт добвлен!!")
 
         navigate("/");
     }
 
-    const postContract = () => {
-        const article = {
+    const delay = ms => new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
+
+    const postContract = async () => {
+        const articleContract = {
             objects: contract.objects,
             customer: contract.customer,
             executor: contract.executor,
@@ -137,8 +141,23 @@ function InputMain() {
             responsible2: contract.responsible2,
             states: contract.states
         };
-        axios.post('http://localhost:8080/create/contract', article)
-            .then(response => setContract(initialFormStateContract))
+
+        const articleDate = {
+            dateStart: dateData.dateStart,
+            description: dateData.description
+        };
+
+        axios.all([
+            axios.post('http://localhost:8080/create/contract', articleContract)
+            .then(response => setContract(initialFormStateContract)),
+
+            await delay(1000),
+
+            axios.post('http://localhost:8080/create/date', articleDate)
+            .then(response => setDateData(initialFormStateDates))
+        ]);
+
+
     };
 
     const postDate = () => {
@@ -150,11 +169,11 @@ function InputMain() {
             .then(response => setDateData(initialFormStateDates));
     };
 
-    const postFile = () => {
-        const article = { fileName: fileData.fileName };
-        axios.post('http://localhost:8080/create/fileWay', article)
-            .then(response => setFilesData(initialFormStateFiles));
-    };
+    // const postFile = () => {
+    //     const article = { fileName: fileData.fileName };
+    //     axios.post('http://localhost:8080/create/fileWay', article)
+    //         .then(response => setFilesData(initialFormStateFiles));
+    // };
     // ################################################################################# POST
 
     const optionsDep = departments.map(dep => {
@@ -164,7 +183,6 @@ function InputMain() {
         };
         items.children = persons.filter(per => per.departmentId === dep.id).map(per => ({
             value: per.id,
-            
             label: per.title,
         }));
 
@@ -178,8 +196,8 @@ function InputMain() {
         return e?.fileList;
     };
 
-    console.log(contract);
-    console.log(dateData);
+
+    console.log(fileData);
     return (
         <div className="container-input">
             <Header className="impHeader" />
@@ -263,15 +281,18 @@ function InputMain() {
                 </label>
 
 
-                <Form.Item label="" valuePropName="fileList" getValueFromEvent={normFile}>
+                <label className="upload">
                     Файлы:
-                    <Upload action="/upload.do" listType="picture-card">
-                        <button style={{ border: 0, background: 'none' }} type="button">
-                        <PlusOutlined style={{ color: "white" }} />
-                        <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>
-                        </button>
-                    </Upload>
-                </Form.Item>
+                    <Form.Item label="" className="uploadFiles" valuePropName="fileList" getValueFromEvent={normFile}>
+                        
+                        <Upload action="/upload.do" listType="picture-card">
+                            <button style={{ border: 0, background: 'none' }} type="button">
+                            <PlusOutlined style={{ color: "white" }} />
+                            <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>
+                            </button>
+                        </Upload>
+                    </Form.Item>
+                </label>
 
                 <Button className="sub" onClick={handleSubmit}>Добавить</Button>
             </Form>
