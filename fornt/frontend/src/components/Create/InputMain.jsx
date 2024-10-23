@@ -46,6 +46,7 @@ function InputMain() {
     const [persons, setPers] = useState([]);
     const [statuses, setStat] = useState([]);
     const [departments, setDep] = useState([]);
+    var files = [];
 
     const [contract, setContract] = useState(initialFormStateContract);
     const [fileData, setFilesData] = useState(initialFormStateFiles);
@@ -77,7 +78,6 @@ function InputMain() {
 
     // ################################################################################# GET
 
-    // TODO: Fix input value in Contract
     const handleChange = (str, i) => {
         let val = i;
         let name = str;
@@ -104,15 +104,20 @@ function InputMain() {
         setDateData({...dateData, [event.target.name]: event.target.value});
     }
 
-    const handleChangeFiles = (str, i) => {
-        let val = i;
-        let name = str;
-        setFilesData({ ...fileData, [name]: val });
+    // const getBase64 = (img, callback) => {
+    //     const reader = new FileReader();
+    //     reader.addEventListener('load', () => callback(reader.result));
+    //     reader.readAsDataURL(img);
+    // };
+
+    const handleChangeFiles = (file) => {
+        files.push(file);
+        setFilesData({ ...fileData, fileName: files });
     }
 
-    const handleChangeDep = (event) => {
-        setDep({ ...departments, [event.target.name]: event.target.value })
-    }
+    // const handleChangeDep = (event) => {
+    //     setDep({ ...departments, [event.target.name]: event.target.value })
+    // }
 
     const navigate = useNavigate();
 
@@ -147,6 +152,10 @@ function InputMain() {
             description: dateData.description
         };
 
+        const articleFile = {
+            fileUrl: fileData.fileName
+        }
+
         axios.all([
             axios.post('http://localhost:8080/create/contract', articleContract)
             .then(response => setContract(initialFormStateContract)),
@@ -154,19 +163,13 @@ function InputMain() {
             await delay(1000),
 
             axios.post('http://localhost:8080/create/date', articleDate)
-            .then(response => setDateData(initialFormStateDates))
+            .then(response => setDateData(initialFormStateDates)),
+
+            axios.post('http://localhost:8080/create/fileWay', articleFile)
+            .then(response => setFilesData(initialFormStateFiles))
         ]);
 
 
-    };
-
-    const postDate = () => {
-        const article = {
-            dateStart: dateData.dateStart,
-            description: dateData.description
-        };
-        axios.post('http://localhost:8080/create/date', article)
-            .then(response => setDateData(initialFormStateDates));
     };
 
     // const postFile = () => {
@@ -189,12 +192,12 @@ function InputMain() {
         return items;
     })
 
-    const normFile = (e) => {
-        if (Array.isArray(e)) {
-          return e;
-        }
-        return e?.fileList;
-    };
+    // const normFile = (e) => {
+    //     if (Array.isArray(e)) {
+    //         handleChangeFiles(e)
+    //     }
+    //     handleChangeFiles(e?.fileList);
+    // };
 
 
     console.log(fileData);
@@ -283,9 +286,13 @@ function InputMain() {
 
                 <label className="upload">
                     Файлы:
-                    <Form.Item label="" className="uploadFiles" valuePropName="fileList" getValueFromEvent={normFile}>
+                    <Form.Item label="" className="uploadFiles">
                         
-                        <Upload action="/upload.do" listType="picture-card">
+                        <Upload 
+                        beforeUpload={handleChangeFiles}
+                        listType="picture-card"
+                        multiple
+                        >
                             <button style={{ border: 0, background: 'none' }} type="button">
                             <PlusOutlined style={{ color: "white" }} />
                             <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>

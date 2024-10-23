@@ -2,13 +2,11 @@ package com.example.webdev.controllers;
 
 import com.example.webdev.db.dao.ContractDao;
 import com.example.webdev.db.dao.DateDao;
-import com.example.webdev.db.dao.FilesDao;
 import com.example.webdev.db.dto.*;
 import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.db.model.DateModel;
 import com.example.webdev.db.model.FileModel;
 import com.example.webdev.service.*;
-import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
@@ -30,6 +27,8 @@ public class MainController {
     private final DateService dateService;
     private final FileService fileService;
     private final Logger log = LoggerFactory.getLogger(MainController.class);
+    private List<MultipartFile> files = new ArrayList<>();
+
 
     @Autowired
     public MainController(ContractServiceImpl contractService, DateService dateService, FileService fileService) {
@@ -101,14 +100,15 @@ public class MainController {
     }
 
     @PostMapping("/create/fileWay")
-    public ResponseEntity<?> creteFile(@RequestBody MultipartFile files) {
+    public ResponseEntity<?> creteFile(@RequestParam MultipartFile[] file) {
+        for (MultipartFile fileItem : file) {
+            files.add(fileItem);
+        }
 
-//        try {
-//            List<FileUploadResponse>
-//        } catch (Exception e) {
-//            throw new RuntimeException(e.getMessage());
-//        }
 
+        for (MultipartFile fileItem : files) {
+            log.info("File is " + fileItem.getOriginalFilename() + " Upload!!!");
+        }
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
