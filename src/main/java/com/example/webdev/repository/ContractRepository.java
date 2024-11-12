@@ -12,11 +12,12 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
      * Укороченный запрос для главной страницы
      * @return Укороченный список строк из таблицы Должности
      */
-    @Query(value = "SELECT д.objects, з.name, д.executor, с.name, о.name, ст.name FROM договоры д\n" +
-            "JOIN заказчики з ON д.customer = з.id\n" +
-            "\tJOIN сотрудники с ON д.responsible = с.id\n" +
-            "\tJOIN отделы о ON д.responsible = о.id\n" +
-            "\tJOIN статусы ст ON д.states = ст.id;",
+    @Query(value = """
+            SELECT д.id_contract, д.objects, з.name, д.executor, с.name, о.name, ст.name FROM договоры д
+            JOIN заказчики з ON д.customer = з.id
+            \tJOIN сотрудники с ON д.responsible = с.id
+            \tJOIN отделы о ON д.responsible = о.id
+            \tJOIN статусы ст ON д.states = ст.id;""",
                 nativeQuery = true)
     List<String> findAllContractsJoin();
 
@@ -47,4 +48,29 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
 
     @Query(value = "SELECT MAX(id_contract) + 1 FROM договоры", nativeQuery = true)
     int getNexValId();
+
+//    Запросы для конкретного контракта
+//    Заказчик
+    @Query(value = "select з.name from договоры д join заказчики з on д.customer = з.id where д.id_contract = ?1", nativeQuery = true)
+    String getCustomerById(int id);
+
+//    Ответсвенные
+    @Query(value = """
+            select с.name, о.name from договоры д
+            join сотрудники с ON д.responsible = с.id
+            JOIN отделы о ON д.responsible = о.id where д.id_contract = ?1""", nativeQuery = true)
+    String getResponsibleById(int id);
+
+    @Query(value = """
+            select с.name, о.name from договоры д
+            join сотрудники с ON д.responsible_2 = с.id
+            JOIN отделы о ON д.responsible_2 = о.id where д.id_contract = ?1""", nativeQuery = true)
+    String getResponsible2ById(int id);
+
+    @Query(value = """
+               select id_contract, states from договоры д
+               join статусы с ON д.states = с.id""", nativeQuery = true)
+    String getStatusById(int id);
+
+
 }

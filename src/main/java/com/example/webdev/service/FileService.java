@@ -12,12 +12,12 @@ public class FileService {
     @Autowired
     private FilesRepository fileRepository;
 
-    public FilesDao CreateDao(FileModel model, int idContract) {
-        return new FilesDao(model.getFileName(), idContract, fileRepository.getNexValId());
+    public FilesDao CreateDao(String url, int idContract) {
+        return new FilesDao(url, idContract, fileRepository.getNexValId());
     }
 
-    public void save(FileModel file, int idContract) {
-        fileRepository.save(CreateDao(file, idContract));
+    public void save(String url, int idContract) {
+        fileRepository.save(CreateDao(url, idContract));
     }
 
 }

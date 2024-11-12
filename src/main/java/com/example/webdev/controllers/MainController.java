@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +26,7 @@ public class MainController {
     private final DateService dateService;
     private final FileService fileService;
     private final Logger log = LoggerFactory.getLogger(MainController.class);
+//    private final FileModel files = new FileModel();
     private List<MultipartFile> files = new ArrayList<>();
 
 
@@ -81,6 +81,23 @@ public class MainController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+//    Отправка данных по ID
+    @GetMapping("/edited/customer")
+    public CustomerDto getCustomerById(@RequestParam int id) {
+        log.info(contractService.readCustomerById(id).getName());
+        return contractService.readCustomerById(id);
+    }
+
+    @GetMapping("/edited/personal")
+    public List<PersonalDto> getPersonalById(@RequestParam int id) {
+        return contractService.readPersonalById(id);
+    }
+
+    @GetMapping("/edited/status")
+    public StatusDto getStatusById(@RequestParam int id) {
+        return contractService.readStatusById(id);
+    }
+
     @PostMapping("/create/contract")
     public ResponseEntity<?> createContract(@RequestBody ContractModel model) {
         log.info("Created contract.....");
@@ -100,16 +117,9 @@ public class MainController {
     }
 
     @PostMapping("/create/fileWay")
-    public ResponseEntity<?> creteFile(@RequestParam MultipartFile[] file) {
-        for (MultipartFile fileItem : file) {
-            files.add(fileItem);
-        }
+    public ResponseEntity<?> creteFile(@RequestBody FileModel filesModel) {
 
-
-        for (MultipartFile fileItem : files) {
-            log.info("File is " + fileItem.getOriginalFilename() + " Upload!!!");
-        }
-
+//        TODO : Доработать хранение файов
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

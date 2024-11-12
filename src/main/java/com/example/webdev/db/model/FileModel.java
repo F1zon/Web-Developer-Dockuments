@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileModel {
-    String fileName;
+    Object[] fileUrl;
 }

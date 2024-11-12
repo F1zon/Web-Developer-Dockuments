@@ -35,7 +35,7 @@ function InputMain() {
     };
 
     const initialFormStateFiles = {
-        fileName: []
+        fileName: new Array()
     };
 
     const initialFormStateDates = {
@@ -46,7 +46,6 @@ function InputMain() {
     const [persons, setPers] = useState([]);
     const [statuses, setStat] = useState([]);
     const [departments, setDep] = useState([]);
-    var files = [];
 
     const [contract, setContract] = useState(initialFormStateContract);
     const [fileData, setFilesData] = useState(initialFormStateFiles);
@@ -104,20 +103,16 @@ function InputMain() {
         setDateData({...dateData, [event.target.name]: event.target.value});
     }
 
-    // const getBase64 = (img, callback) => {
-    //     const reader = new FileReader();
-    //     reader.addEventListener('load', () => callback(reader.result));
-    //     reader.readAsDataURL(img);
-    // };
+    const handleChangeFiles = ({fileList: filus}) => {
+        // console.log(typeof(filus));
+        // var tmpFiles = fileData.fileName;
+        // tmpFiles.push(new File(filus));
 
-    const handleChangeFiles = (file) => {
-        files.push(file);
-        setFilesData({ ...fileData, fileName: files });
+        // console.log(Object.values(tmpFiles));
+
+        // console.log(filus);
+        setFilesData({ fileName: filus });
     }
-
-    // const handleChangeDep = (event) => {
-    //     setDep({ ...departments, [event.target.name]: event.target.value })
-    // }
 
     const navigate = useNavigate();
 
@@ -153,8 +148,11 @@ function InputMain() {
         };
 
         const articleFile = {
-            fileUrl: fileData.fileName
+            fileUrl: Object.values(fileData.fileName)
         }
+
+        let fd = new FormData();
+        fd.append("files", fileData.fileName);
 
         axios.all([
             axios.post('http://localhost:8080/create/contract', articleContract)
@@ -165,18 +163,13 @@ function InputMain() {
             axios.post('http://localhost:8080/create/date', articleDate)
             .then(response => setDateData(initialFormStateDates)),
 
-            axios.post('http://localhost:8080/create/fileWay', articleFile)
-            .then(response => setFilesData(initialFormStateFiles))
+            // axios.post('http://localhost:8080/create/fileWay', articleFile)
+            // .then(response => setFilesData(initialFormStateFiles))
         ]);
 
 
     };
 
-    // const postFile = () => {
-    //     const article = { fileName: fileData.fileName };
-    //     axios.post('http://localhost:8080/create/fileWay', article)
-    //         .then(response => setFilesData(initialFormStateFiles));
-    // };
     // ################################################################################# POST
 
     const optionsDep = departments.map(dep => {
@@ -191,14 +184,6 @@ function InputMain() {
 
         return items;
     })
-
-    // const normFile = (e) => {
-    //     if (Array.isArray(e)) {
-    //         handleChangeFiles(e)
-    //     }
-    //     handleChangeFiles(e?.fileList);
-    // };
-
 
     console.log(fileData);
     return (
@@ -288,8 +273,10 @@ function InputMain() {
                     Файлы:
                     <Form.Item label="" className="uploadFiles">
                         
-                        <Upload 
-                        beforeUpload={handleChangeFiles}
+                        <Upload
+                        beforeUpload={() => false} 
+                        onChange={handleChangeFiles}
+                        // action={handleChangeFiles}
                         listType="picture-card"
                         multiple
                         >

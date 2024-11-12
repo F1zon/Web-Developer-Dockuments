@@ -33,7 +33,7 @@ public class ContractServiceImpl {
         List<SmallContractDto> result = new ArrayList<>();
         for (String s : results) {
             tmp = Arrays.asList(s.split(","));
-            result.add(new SmallContractDto(tmp.get(0), tmp.get(1), tmp.get(2), tmp.get(3), tmp.get(4), tmp.get(5)));
+            result.add(new SmallContractDto(tmp.get(0), tmp.get(1), tmp.get(2), tmp.get(3), tmp.get(4), tmp.get(5), tmp.get(6)));
         }
 
         return result;
@@ -85,6 +85,29 @@ public class ContractServiceImpl {
         }
 
         return result;
+    }
+
+    public CustomerDto readCustomerById(int id) {
+        String request = repository.getCustomerById(id);
+        return new CustomerDto(id, request);
+    }
+
+    public List<PersonalDto> readPersonalById(int id) {
+        String[] request1 = repository.getResponsibleById(id).split(",");
+        String[] request2 = repository.getResponsible2ById(id).split(",");
+        List<PersonalDto> result = new ArrayList<>();
+        result.add(new PersonalDto(Integer.parseInt(request1[0]),
+                request1[1], Integer.parseInt(request1[2])));
+
+        result.add(new PersonalDto(Integer.parseInt(request2[0]),
+                request2[1], Integer.parseInt(request2[2])));
+
+        return result;
+    }
+
+    public StatusDto readStatusById(int id) {
+        String[] request = repository.getStatusById(id).split(",");
+        return new StatusDto(Integer.parseInt(request[0]), request[1]);
     }
 
     public void create(ContractDao model) {

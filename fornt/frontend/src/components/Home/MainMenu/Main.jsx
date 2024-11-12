@@ -4,6 +4,8 @@ import Created from '../../Create/Create'
 
 function Main() {
     const [docks, setDocks] = useState([]);
+    const [selectedId, setSelId] = useState();
+
 
     useEffect(() => {
         fetch('http://localhost:8080/docks')
@@ -19,9 +21,13 @@ function Main() {
     }
 
     const navigateReduct = () => {
-        navigate('/reduct/{id}');
+        navigate('/editing?id=' + selectedId);
     }
 
+    const setId = (event, value) => {
+        setSelId(value);
+        
+    }
 
     return(
         <div className="Main">
@@ -31,7 +37,7 @@ function Main() {
             </div>
             <div className="DocksTable">
                 <div className="InfoBar">
-                    <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox" />
+                    <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox"/>
                     <p className="object">Объект</p>
                     <p className="customer">Заказчик</p>
                     <p className="executor">Исполнитель</p>
@@ -42,8 +48,8 @@ function Main() {
                 <div className="docksTable">
                     <table>
                         {docks.map(dock => (
-                            <tr key={dock.idCustomer}>
-                                <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox" />
+                            <tr key={dock.idContract}>
+                                <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox" onChange={(e) => setId(e, dock.idContract)}/>
                                 <td className="object"> {dock.objects} </td>
                                 <td className="customer"> {dock.customer} </td>
                                 <td className="executor"> {dock.executor} </td>
