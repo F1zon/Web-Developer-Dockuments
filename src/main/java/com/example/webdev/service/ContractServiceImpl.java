@@ -4,6 +4,7 @@ import com.example.webdev.db.dao.ContractDao;
 import com.example.webdev.db.dto.*;
 import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.repository.ContractRepository;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class ContractServiceImpl {
@@ -110,6 +112,11 @@ public class ContractServiceImpl {
         return new StatusDto(Integer.parseInt(request[0]), request[1]);
     }
 
+    public DateDto readDateById(int id) {
+        String[] request = repository.getDatesById(id).split(",");
+        return new DateDto(Integer.parseInt(request[0]), request[1], Integer.parseInt(request[2]), request[3]);
+    }
+
     public void create(ContractDao model) {
         repository.save(model);
     }
@@ -118,8 +125,8 @@ public class ContractServiceImpl {
         return repository.findById(id).get();
     }
 
-    public void delete(ContractDao model) {
-        repository.delete(model);
+    public void delete(int id) {
+        repository.deleteContractAndDateById((long) id);
     }
 
     public ContractDao creteDao(ContractModel model) {

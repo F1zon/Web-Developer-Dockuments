@@ -6,14 +6,19 @@ import java.sql.Date;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class DateDto {
+
+     public DateDto(int id, String description, int contract, String dateStart) {
+          this.id = id;
+          this.description = description;
+          this.contract = contract;
+          this.dateStart = dateStart;
+     }
+
      int id;
-     String dateStart;
-     String dateEnd;
      String description;
-     String stages;
      int contract;
+     String dateStart;
 }

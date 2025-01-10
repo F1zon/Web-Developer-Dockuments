@@ -2,7 +2,9 @@ package com.example.webdev.repository;
 
 import com.example.webdev.db.dao.ContractDao;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -56,15 +58,15 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
 
 //    Ответсвенные
     @Query(value = """
-            select с.name, о.name from договоры д
+            select с.id, с.name, с.department from договоры д
             join сотрудники с ON д.responsible = с.id
-            JOIN отделы о ON д.responsible = о.id where д.id_contract = ?1""", nativeQuery = true)
+            """, nativeQuery = true)
     String getResponsibleById(int id);
 
     @Query(value = """
-            select с.name, о.name from договоры д
+            select с.id, с.name, с.department from договоры д
             join сотрудники с ON д.responsible_2 = с.id
-            JOIN отделы о ON д.responsible_2 = о.id where д.id_contract = ?1""", nativeQuery = true)
+            """, nativeQuery = true)
     String getResponsible2ById(int id);
 
     @Query(value = """
@@ -72,5 +74,20 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
                join статусы с ON д.states = с.id""", nativeQuery = true)
     String getStatusById(int id);
 
+    @Query(value = """
+                select id_dat,description,contract,date_start from даты where contract = ?1
+                """, nativeQuery = true)
+    String getDatesById(int id);
 
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = """
+                delete from даты where contract = ?1;
+
+                delete from договоры where id_contract in (
+                    select id_contract from договоры left outer join даты on договоры.id_contract = даты.contract
+                                       where даты.contract is null
+                );
+                """, nativeQuery = true)
+    void deleteContractAndDateById(long id);
 }

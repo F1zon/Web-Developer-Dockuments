@@ -7,7 +7,7 @@
 
 .RedactBar {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1.5fr 0.5fr 0.1fr;
     padding-left: 5vw;
     padding-right: 35vw;
     padding-top: 2vh;
@@ -27,6 +27,13 @@
     width: 15vw;
     background: #2DD1F5;
     border-radius: 10px;
+}
+.deleteDock {
+    width: 8vw;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: -7vw;
 }
 
 .DocksTable {

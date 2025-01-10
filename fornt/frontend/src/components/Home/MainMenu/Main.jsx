@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useNavigate } from 'react-router-dom';
 import Created from '../../Create/Create'
+import axios from "axios";
 
 function Main() {
     const [docks, setDocks] = useState([]);
@@ -24,6 +25,11 @@ function Main() {
         navigate('/editing?id=' + selectedId);
     }
 
+    const deleteDocks = () => {
+        // fetch('http://localhost:8080/delete?id=' + selectedId);
+        const response = axios.delete(`http://localhost:8080/delete?id=` + selectedId);
+    }
+
     const setId = (event, value) => {
         setSelId(value);
         
@@ -34,6 +40,7 @@ function Main() {
             <div className="RedactBar">
                 <button className="crateDock" onClick={navigateCreate}>Добавить</button>
                 <button className="redactDock" onClick={navigateReduct}>Редактировать</button>
+                <button className="deleteDock" onClick={deleteDocks}>Удалить</button>
             </div>
             <div className="DocksTable">
                 <div className="InfoBar">

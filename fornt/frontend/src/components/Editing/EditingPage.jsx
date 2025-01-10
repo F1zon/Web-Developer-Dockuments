@@ -42,50 +42,33 @@ const initialFormStateContract = {
     states: ''
 };
 
-const initFormStContract = {
-    objects: '',
-    customer: '',
-    executor: '',
-    responsible: '',
-    responsible2: '',
-    states: ''
-}
-
 const initialFormStateFiles = {
     fileName: new Array()
 };
-
-const initFromStFiles = {
-    arrFiles: 'Array'
-}
 
 const initialFormStateDates = {
     dateStart: '',
     description: ''
 };
 
-const initFormStDates = {
-    dateStart: '',
-    description: ''
-}
-
 // ################################################################################ Инициализация состояний для форм
 
 //  Состояния для всех данных с бд
-const [customers, setCust] = useState([]);
-const [persons, setPers] = useState([]);
-const [statuses, setStat] = useState([]);
-const [departments, setDep] = useState([]);
+    const [customers, setCust] = useState([]);
+    const [persons, setPers] = useState([]);
+    const [statuses, setStat] = useState([]);
+    const [departments, setDep] = useState([]);
 
-const [contract, setContract] = useState(initialFormStateContract);
-const [fileData, setFilesData] = useState(initialFormStateFiles);
-const [dateData, setDateData] = useState(initialFormStateDates);
+    const [customer, setCustomer] = useState([]);
+    const [personal, setPersonal] = useState([]);
+    const [status, setStatus] = useState([]);
+    const [department, setDepartment] = useState([]);
+    const [datas, setDatas] = useState([]);
 
-// Состояния для определённого контракта
-const [customer, setCustomer] = useState();
-const [personal, setPersonal] = useState([]);
-const [department, setDepartment] = useState([]);
-const [status, setStatus] = useState();
+    const [contract, setContract] = useState(initialFormStateContract);
+    const [fileData, setFilesData] = useState(initialFormStateFiles);
+    const [dateData, setDateData] = useState(initialFormStateDates);
+    const [messageApi, contextHolder] = message.useMessage();
 
 // ################################################################################ Добаление данных с сервера в состояние форм
 
@@ -110,13 +93,18 @@ useEffect(() => {
         .then(data => setDepartment(data))
         .catch(error => console.log('Error fetcheng departments: ', error));
 
+    fetch(`http://localhost:8080/info/dates?id=${contract_id}`)
+        .then(response => response.clone().json())
+        .then(data => setDatas(data))
+        .catch(error => console.log('Error fetcheng dates: ', error));
+
     fetch('http://localhost:8080/info/customers')
         .then(response => response.clone().json())
         .then(data => setCust(data))
         .catch(error => console.log('Error fetching customers: ', error));
     
     fetch('http://localhost:8080/info/personal')
-        .then(response => response.json())
+        .then(response => response.clone().json())
         .then(data => setPers(data))
         .catch(error => console.log('Error fetching personal: ', error));
 
@@ -129,7 +117,7 @@ useEffect(() => {
         .then(response => response.clone().json())
         .then(data => setDep(data))
         .catch(error => console.log('Error fetcheng departments: ', error));
-}, []);
+},);
 
 
 // ################################################################################ Заполнение данных с клиента
@@ -242,7 +230,7 @@ const postContract = async () => {
 
 // ################################################################################ Отображение страницы
 
-console.log(customer.name);
+console.log("datas: ", datas);
     return (
         <div className="container-input">
             <Header className="impHeader" />
@@ -258,7 +246,7 @@ console.log(customer.name);
                 <label>
                     Объект:
                     <Input 
-                        value={customer.name}
+                        value={datas.contract}
                         type="text"
                         name="objects"
                         onChange={handleChangeInput} />
@@ -268,6 +256,7 @@ console.log(customer.name);
                     Заказчик:
                     <Select 
                         style={ {height: 50} }
+                        value={customer.name}
                         name="customer"
                         onChange={handleChange.bind(this, "customer")}>
                         {customers.map(cus => (
@@ -279,6 +268,7 @@ console.log(customer.name);
                 <label>
                     Исполнитель:
                     <Input 
+                        value={contract.executor}
                         type="text"
                         name="executor"
                         onChange={handleChangeInput} />
