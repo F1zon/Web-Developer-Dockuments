@@ -58,20 +58,21 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
 
 //    Ответсвенные
     @Query(value = """
-            select с.id, с.name, с.department from договоры д
-            join сотрудники с ON д.responsible = с.id
+            select id, name, department from сотрудники с
+            join договоры д on с.id = д.responsible where д.id_contract = ?1
             """, nativeQuery = true)
     String getResponsibleById(int id);
 
     @Query(value = """
-            select с.id, с.name, с.department from договоры д
-            join сотрудники с ON д.responsible_2 = с.id
+            select id, name, department from сотрудники с
+            join договоры д on с.id = д.responsible_2 where д.id_contract = ?1
             """, nativeQuery = true)
     String getResponsible2ById(int id);
 
     @Query(value = """
-               select id_contract, states from договоры д
-               join статусы с ON д.states = с.id""", nativeQuery = true)
+            select д.id_contract, с.name from договоры д
+            join статусы с on д.states = с.id where д.id_contract = ?1
+            """, nativeQuery = true)
     String getStatusById(int id);
 
     @Query(value = """
@@ -90,4 +91,15 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
                 );
                 """, nativeQuery = true)
     void deleteContractAndDateById(long id);
+
+    @Query(value = """
+        select * from договоры where id_contract = ?1
+        """, nativeQuery = true)
+    String findByIdContract(int id);
+
+    @Modifying
+    @Query(value = """
+        update договоры set objects = ?1, customer = ?2, executor = ?3, responsible = ?4, responsible_2 = ?5, states = ?6 where id_contract = ?7
+        """, nativeQuery = true)
+    void updateContract(String obj, int customer, String executor, int responsible, int responsible2, int states, int id);
 }

@@ -12,4 +12,8 @@ public interface DateRepository extends JpaRepository<DateDao, Long> {
     @Query(value = "SELECT MAX(id_dat) + 1 FROM даты", nativeQuery = true)
     int getNexValId();
 
+    @Query(value = """
+        select * from даты where contract = ?1
+        """, nativeQuery = true)
+    String findDateDaoById(int id);
 }

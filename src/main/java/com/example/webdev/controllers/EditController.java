@@ -1,9 +1,6 @@
 package com.example.webdev.controllers;
 
-import com.example.webdev.db.dto.CustomerDto;
-import com.example.webdev.db.dto.DateDto;
-import com.example.webdev.db.dto.PersonalDto;
-import com.example.webdev.db.dto.StatusDto;
+import com.example.webdev.db.dto.*;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
@@ -23,7 +21,6 @@ public class EditController {
     private final ContractServiceImpl contractService;
     private final DateService dateService;
     private final FileService fileService;
-    private final Logger logger = LoggerFactory.getLogger(MainController.class);
 
     @Autowired
     public EditController(ContractServiceImpl contractService, DateService dateService, FileService fileService) {
@@ -35,13 +32,16 @@ public class EditController {
     //    Отправка данных по ID
     @GetMapping("/edited/customer")
     public CustomerDto getCustomerById(@RequestParam int id) {
-        logger.info(contractService.readCustomerById(id).getName());
+
         return contractService.readCustomerById(id);
     }
 
     @GetMapping("/edited/personal")
     public List<PersonalDto> getPersonalById(@RequestParam int id) {
-        return contractService.readPersonalById(id);
+        List<PersonalDto> personalDtos = new ArrayList<>();
+        personalDtos.add(contractService.readPersonalByIdOne(id));
+        personalDtos.add(contractService.readPersonalByIdTwo(id));
+        return personalDtos;
     }
 
     @GetMapping("/edited/status")
@@ -51,6 +51,11 @@ public class EditController {
 
     @GetMapping("/edited/dates")
     public DateDto getDatesById(@RequestParam int id) {
-        return contractService.readDateById(id);
+        return dateService.findById(id);
+    }
+
+    @GetMapping("/edited/contract")
+    public ContractDto getContractById(@RequestParam int id) {
+        return contractService.findByIdContract(id);
     }
 }

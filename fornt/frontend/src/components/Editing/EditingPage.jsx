@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import '../Create/InputFild.css';
@@ -23,10 +23,11 @@ import {
   Upload,
 } from 'antd';
 import { useLocation  } from "react-router-dom";
+import dayjs from 'dayjs';
 
 const EditedPage = () => {
 
-
+    const isCalledRef = React.useRef(false);
     const params = useLocation().search;
     const contract_id = new URLSearchParams(params).get("id");
     console.log(contract_id);
@@ -59,6 +60,7 @@ const initialFormStateDates = {
     const [statuses, setStat] = useState([]);
     const [departments, setDep] = useState([]);
 
+    const [currentContract, setCurrentContract] = useState([]);
     const [customer, setCustomer] = useState([]);
     const [personal, setPersonal] = useState([]);
     const [status, setStatus] = useState([]);
@@ -73,6 +75,9 @@ const initialFormStateDates = {
 // ################################################################################ Добаление данных с сервера в состояние форм
 
 useEffect(() => {
+    if (isCalledRef.current){
+        return;
+    }
     fetch(`http://localhost:8080/edited/customer?id=${contract_id}`)
         .then(response => response.clone().json())
         .then(data => setCustomer(data))
@@ -93,10 +98,15 @@ useEffect(() => {
         .then(data => setDepartment(data))
         .catch(error => console.log('Error fetcheng departments: ', error));
 
-    fetch(`http://localhost:8080/info/dates?id=${contract_id}`)
+    fetch(`http://localhost:8080/edited/dates?id=${contract_id}`)
         .then(response => response.clone().json())
         .then(data => setDatas(data))
         .catch(error => console.log('Error fetcheng dates: ', error));
+    
+    fetch(`http://localhost:8080/edited/contract?id=${contract_id}`)
+        .then(response => response.clone().json())
+        .then(data => setCurrentContract(data))
+        .catch(error => console.log('Error fetcheng currentContract: ', error));
 
     fetch('http://localhost:8080/info/customers')
         .then(response => response.clone().json())
@@ -117,7 +127,9 @@ useEffect(() => {
         .then(response => response.clone().json())
         .then(data => setDep(data))
         .catch(error => console.log('Error fetcheng departments: ', error));
-},);
+
+    isCalledRef.current = true
+}, []);
 
 
 // ################################################################################ Заполнение данных с клиента
@@ -160,11 +172,11 @@ const handleChangeFiles = ({fileList: filus}) => {
 }
 
 const handleSubmit = async => {
-    postContract();
+    updateContract();
     // postDate();
     // postFile();
 
-    alert("Контракт добвлен!!")
+    alert("Контракт сохранён")
 
     navigate("/");
 }
@@ -172,6 +184,7 @@ const handleSubmit = async => {
 // ################################################################################ Вспомогательные функции
 
 const navigate = useNavigate();
+const formatedDate = dayjs(datas.dateStart);
 
 const optionsDep = departments.map(dep => {
     const items = {
@@ -190,8 +203,9 @@ const delay = ms => new Promise(
     resolve => setTimeout(resolve, ms)
 );
 
-const postContract = async () => {
+const updateContract = async () => {
     const articleContract = {
+        id: contract.id,
         objects: contract.objects,
         customer: contract.customer,
         executor: contract.executor,
@@ -213,13 +227,13 @@ const postContract = async () => {
     fd.append("files", fileData.fileName);
 
     axios.all([
-        axios.post('http://localhost:8080/create/contract', articleContract)
+        axios.post('http://localhost:8080/update/contract', articleContract)
         .then(response => setContract(initialFormStateContract)),
 
         await delay(1000),
 
-        axios.post('http://localhost:8080/create/date', articleDate)
-        .then(response => setDateData(initialFormStateDates)),
+        // axios.post('http://localhost:8080/create/date', articleDate)
+        // .then(response => setDateData(initialFormStateDates)),
 
         // axios.post('http://localhost:8080/create/fileWay', articleFile)
         // .then(response => setFilesData(initialFormStateFiles))
@@ -230,7 +244,7 @@ const postContract = async () => {
 
 // ################################################################################ Отображение страницы
 
-console.log("datas: ", datas);
+ console.log("dates: ", datas.dateStart);
     return (
         <div className="container-input">
             <Header className="impHeader" />
@@ -246,7 +260,7 @@ console.log("datas: ", datas);
                 <label>
                     Объект:
                     <Input 
-                        value={datas.contract}
+                        value={currentContract.objectTitle}
                         type="text"
                         name="objects"
                         onChange={handleChangeInput} />
@@ -268,7 +282,7 @@ console.log("datas: ", datas);
                 <label>
                     Исполнитель:
                     <Input 
-                        value={contract.executor}
+                        value={currentContract.executor}
                         type="text"
                         name="executor"
                         onChange={handleChangeInput} />
@@ -277,6 +291,7 @@ console.log("datas: ", datas);
                 <label>
                     Описание работ:
                     <Input 
+                        value={datas.description}
                         type="text"
                         name="description"
                         onChange={handleChangeDateInput} />
@@ -285,6 +300,7 @@ console.log("datas: ", datas);
                 <label>
                     Ответсвенный:
                     <Cascader
+                        // value={personal.at(0).title}
                         name="responsible"
                         style={ { width: "100%", color: "black", height: 50 } }
                         options={optionsDep}
@@ -295,6 +311,7 @@ console.log("datas: ", datas);
                 <label>
                     Ответсвенный-2:
                     <Cascader
+                        // value={personal.at(1).title}
                         name="responsible2"
                         style={ { width: "100%", color: "black", height: 50 } }
                         options={optionsDep}
@@ -304,12 +321,12 @@ console.log("datas: ", datas);
 
                 <label>
                     Дата добавления:
-                    <DatePicker style={ {height: 50} } name="dateStart" onChange={handleChangeDate.bind(this, "dateStart")}/>
+                    <DatePicker style={ {height: 50} } value={formatedDate} name="dateStart" onChange={handleChangeDate.bind(this, "dateStart")}/>
                 </label>
 
                 <label>
                     Статус договора:
-                    <Select onChange={handleChange.bind(this, "states")} name='states' style={ {height: 50} } value={status}>
+                    <Select onChange={handleChange.bind(this, "states")} name='states' style={ {height: 50} } value={status.title}>
                         {statuses.map(stat => (
                             <Select.Option value={stat.id}>{stat.title}</Select.Option>
                         ))}
@@ -336,7 +353,7 @@ console.log("datas: ", datas);
                     </Form.Item>
                 </label>
 
-                <Button className="sub" onClick={handleSubmit}>Добавить</Button>
+                <Button className="sub" onClick={handleSubmit}>Сохранить</Button>
             </Form>
         </div>
     );

@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContractModel {
+    int id;
     String objects;
     int customer;
     String executor;
