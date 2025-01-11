@@ -38,6 +38,29 @@
     height: 6vh;
     align-items: center;
 }
+
+.selectFilter {
+    display: block;
+    margin-top: -200px;
+}
+.selectFilter p {
+    margin-left: 80px;
+    margin-bottom: 20px;
+    color: white;
+    font-size: medium;
+}
+.selectFilter input {
+    width: 400px;
+    height: 40px;
+    margin-left: 80px;
+    font-size: large;
+}
+.selectCustomer {
+    width: 400px;
+    height: 40px;
+    margin-left: 80px;
+    font-size: large;
+}
 .ButImg {
     grid-area: bi;
     width: 2.5vw;

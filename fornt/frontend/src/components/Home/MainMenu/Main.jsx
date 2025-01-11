@@ -54,26 +54,28 @@ function Main() {
                 </div>
                 <div className="docksTable">
                     <table>
-                        {docks.map(dock => (
-                            <tr key={dock.idContract}>
-                                <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox" onChange={(e) => setId(e, dock.idContract)}/>
-                                <td className="object"> {dock.objects} </td>
-                                <td className="customer"> {dock.customer} </td>
-                                <td className="executor"> {dock.executor} </td>
-                                <td className="pers"> {dock.responsible} </td>
-                                <td className="dep"> {dock.department} </td>
-                                <td className="state"> {dock.states} </td>
-                            </tr>
-                        ))}
+                        <tbody>
+                            {docks.map(dock => (
+                                <tr key={dock.idContract}>
+                                    <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox" onChange={(e) => setId(e, dock.idContract)}/>
+                                    <td className="object"> {dock.objects} </td>
+                                    <td className="customer"> {dock.customer} </td>
+                                    <td className="executor"> {dock.executor} </td>
+                                    <td className="pers"> {dock.responsible} </td>
+                                    <td className="dep"> {dock.department} </td>
+                                    <td className="state"> {dock.states} </td>
+                                </tr>
+                            ))}
+                        </tbody>
                     </table>
                 </div>
-                <div className="bottomNavBar">
+                {/* <div className="bottomNavBar">
                     <a href="" className="colNavLink">1</a>
                     <a href="" className="colNavLink">2</a>
                     <a href="" className="colNavLink">3</a>
                     <p className="emptys">...</p>
                     <a href="" className="colNavLink">n</a>
-                </div>
+                </div> */}
             </div>
         </div>
     );

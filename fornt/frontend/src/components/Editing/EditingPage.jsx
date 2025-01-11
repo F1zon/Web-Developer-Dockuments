@@ -55,6 +55,8 @@ const initialFormStateDates = {
 // ################################################################################ Инициализация состояний для форм
 
 //  Состояния для всех данных с бд
+
+    // TODO: Разобрать useState для внесения изменений
     const [customers, setCust] = useState([]);
     const [persons, setPers] = useState([]);
     const [statuses, setStat] = useState([]);
@@ -130,7 +132,6 @@ useEffect(() => {
 
     isCalledRef.current = true
 }, []);
-
 
 // ################################################################################ Заполнение данных с клиента
 
@@ -260,7 +261,6 @@ const updateContract = async () => {
                 <label>
                     Объект:
                     <Input 
-                        value={currentContract.objectTitle}
                         type="text"
                         name="objects"
                         onChange={handleChangeInput} />
