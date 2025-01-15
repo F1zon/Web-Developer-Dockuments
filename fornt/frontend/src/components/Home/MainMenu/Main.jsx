@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link, useNavigate } from 'react
 import Created from '../../Create/Create'
 import axios from "axios";
 
-function Main() {
+function Main({object}) {
     const [docks, setDocks] = useState([]);
     const [selectedId, setSelId] = useState();
 
@@ -18,7 +18,7 @@ function Main() {
     const navigate = useNavigate();
 
     const navigateCreate = () => {
-        navigate('/create');
+        navigate('/editing');
     }
 
     const navigateReduct = () => {
@@ -32,9 +32,12 @@ function Main() {
 
     const setId = (event, value) => {
         setSelId(value);
-        
     }
 
+    const filterDocks = object == undefined 
+        ? docks
+        : docks.filter(x => x.objects.includes(object));
+    console.log(object === undefined);
     return(
         <div className="Main">
             <div className="RedactBar">
@@ -45,8 +48,8 @@ function Main() {
             <div className="DocksTable">
                 <div className="InfoBar">
                     <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox"/>
-                    <p className="object">Объект</p>
                     <p className="customer">Заказчик</p>
+                    <p className="object">Объект</p>
                     <p className="executor">Исполнитель</p>
                     <p className="pers">Ответсвенный</p>
                     <p className="dep">Отдел</p>
@@ -55,11 +58,11 @@ function Main() {
                 <div className="docksTable">
                     <table>
                         <tbody>
-                            {docks.map(dock => (
+                            {filterDocks.map(dock => (
                                 <tr key={dock.idContract}>
                                     <input type="checkbox" name="choseAll" id="getAll" className="custom-checkbox" onChange={(e) => setId(e, dock.idContract)}/>
-                                    <td className="object"> {dock.objects} </td>
                                     <td className="customer"> {dock.customer} </td>
+                                    <td className="object"> {dock.objects} </td>
                                     <td className="executor"> {dock.executor} </td>
                                     <td className="pers"> {dock.responsible} </td>
                                     <td className="dep"> {dock.department} </td>

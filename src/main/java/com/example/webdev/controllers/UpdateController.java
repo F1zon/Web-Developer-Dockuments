@@ -1,6 +1,7 @@
 package com.example.webdev.controllers;
 
 import com.example.webdev.db.model.ContractModel;
+import com.example.webdev.db.model.FullContractModel;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
@@ -29,10 +30,15 @@ public class UpdateController {
     }
 
     @PostMapping("/update/contract")
-    public ResponseEntity<?> updateContract(@RequestBody ContractModel contract) {
-        logger.info("Update contract {}", contract);
+    public ResponseEntity<?> updateContract(@RequestBody FullContractModel model) {
+        logger.info("Update contract {}", model.getObject());
 
-        contractService.updateContract(contract);
+        ContractModel contractModel = new ContractModel(model.getId(), model.getObject(),
+                model.getCustomer(), model.getExecutor(),
+                model.getResponsibleOne(), model.getResponsibleTwo(),
+                model.getStatus());
+
+        contractService.updateContract(contractModel);
         return ResponseEntity.ok().build();
     }
 }

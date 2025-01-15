@@ -4,6 +4,7 @@ import com.example.webdev.db.dao.DateDao;
 import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.db.model.DateModel;
 import com.example.webdev.db.model.FileModel;
+import com.example.webdev.db.model.FullContractModel;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
@@ -33,10 +34,17 @@ public class CreateController {
     }
 
     @PostMapping("/create/contract")
-    public ResponseEntity<?> createContract(@RequestBody ContractModel model) {
-        logger.info("Created contract.....");
+    public ResponseEntity<?> createContract(@RequestBody FullContractModel model) {
+        logger.info("Created contract..... {}", model.getId());
 
-        contractService.save(model);
+        ContractModel contractModel = new ContractModel(model.getId(), model.getObject(),
+                model.getCustomer(), model.getExecutor(),
+                model.getResponsibleOne(), model.getResponsibleTwo(),
+                model.getStatus());
+        DateModel dateModel = new DateModel(model.getDate(), model.getDescription());
+        contractService.save(contractModel);
+        dateService.save(dateModel, contractService.getCreateContractId());
+
         logger.info("Contract is CREATE!");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

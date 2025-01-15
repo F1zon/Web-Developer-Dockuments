@@ -4,8 +4,6 @@ import com.example.webdev.db.dto.*;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +30,6 @@ public class EditController {
     //    Отправка данных по ID
     @GetMapping("/edited/customer")
     public CustomerDto getCustomerById(@RequestParam int id) {
-
         return contractService.readCustomerById(id);
     }
 
@@ -53,9 +50,17 @@ public class EditController {
     public DateDto getDatesById(@RequestParam int id) {
         return dateService.findById(id);
     }
-
     @GetMapping("/edited/contract")
-    public ContractDto getContractById(@RequestParam int id) {
-        return contractService.findByIdContract(id);
+    public FullContractDto getContractById(@RequestParam int id) {
+        ComponentContractDto componentContractDto = contractService.findByIdContract(id);
+        PersonalDto personalDtoOne = contractService.readPersonalByIdOne(id);
+        PersonalDto personalDtoTwo = contractService.readPersonalByIdTwo(id);
+        DateDto dateDto = dateService.findById(id);
+
+        return new FullContractDto(componentContractDto.getId(), componentContractDto.getObjectTitle(), componentContractDto.getCustomerId(),
+                componentContractDto.getExecutor(), componentContractDto.getResponsibleId(),
+                personalDtoOne.getDepartmentId(), componentContractDto.getResponsible2Id(),
+                personalDtoTwo.getDepartmentId(), componentContractDto.getStatus(),
+                dateDto.getDateStart(), dateDto.getDescription());
     }
 }

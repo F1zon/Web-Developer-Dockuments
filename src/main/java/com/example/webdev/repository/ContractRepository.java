@@ -97,6 +97,7 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
         """, nativeQuery = true)
     String findByIdContract(int id);
 
+    @Transactional
     @Modifying
     @Query(value = """
         update договоры set objects = ?1, customer = ?2, executor = ?3, responsible = ?4, responsible_2 = ?5, states = ?6 where id_contract = ?7

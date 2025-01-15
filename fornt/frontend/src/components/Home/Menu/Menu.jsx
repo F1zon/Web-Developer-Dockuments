@@ -22,7 +22,7 @@ import {
   Upload,
 } from 'antd';
 
-function Menu() {
+function Menu({object, setObject}) {
 
     const initialFormStateContract = {
         objects: '',
@@ -79,6 +79,10 @@ function Menu() {
         setContract( { ...contract, [event.target.name]: event.target.value } )
     }
 
+    const getContractDataFilters = () => {
+        return contract;
+    }
+
 
     return(
         <div className="Menu">
@@ -96,9 +100,10 @@ function Menu() {
                 <div className="selectFilter">
                     <p>Объект</p>
                     <Input 
+                        value={object}
                         type="text"
                         name="objects"
-                        onChange={handleChangeInput} />
+                        onChange={(event) => setObject(event.target.value)} />
                 </div>
 
                 <div className="selectFilter">

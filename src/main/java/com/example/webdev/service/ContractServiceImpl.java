@@ -1,11 +1,9 @@
 package com.example.webdev.service;
 
-import com.example.webdev.controllers.MainController;
 import com.example.webdev.db.dao.ContractDao;
 import com.example.webdev.db.dto.*;
 import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.repository.ContractRepository;
-import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class ContractServiceImpl {
@@ -129,10 +126,10 @@ public class ContractServiceImpl {
         return new StatusDto(Integer.parseInt(request[0]), request[1]);
     }
 
-    public ContractDto findByIdContract(int id) {
+    public ComponentContractDto findByIdContract(int id) {
         String[] request = repository.findByIdContract(id).split(",");
         logger.info(Arrays.toString(request));
-        return new ContractDto(Integer.parseInt(request[0]),
+        return new ComponentContractDto(Integer.parseInt(request[0]),
                 request[1],
                 Integer.parseInt(request[2]),
                 request[3],
