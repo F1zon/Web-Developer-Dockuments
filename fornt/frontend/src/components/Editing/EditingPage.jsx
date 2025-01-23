@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import "../Create/InputFild.css";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import Header from "../Home/Headers/Headers";
 import axios from "axios";
 import {
@@ -27,6 +27,7 @@ import {
   Slider,
   TreeSelect,
   Upload,
+  Space,
 } from "antd";
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
@@ -227,7 +228,29 @@ const EditedPage = () => {
     navigate("/");
   };
 
-  // ################################################################################ Вспомогательные функции
+  // Раболта с блоками
+  const [blocks, setBlocks] = useState([
+    { startDate: null, description: "", endDate: null },
+  ]);
+
+  const addBlock = () => {
+    setBlocks([...blocks, { startDate: null, description: "", endDate: null }]);
+  };
+
+  const removeBlock = (index) => {
+    const newBlocks = blocks.filter((_, i) => i !== index);
+    setBlocks(newBlocks);
+  };
+
+  const handleChangeBlocks = (index, field, value) => {
+    const newBlocks = blocks.map((block, i) => {
+      if (i === index) {
+        return { ...block, [field]: value };
+      }
+      return block;
+    });
+    setBlocks(newBlocks);
+  };
 
   const navigate = useNavigate();
   // const formatedDate = dayjs(datas.dateStart);
@@ -247,7 +270,7 @@ const EditedPage = () => {
     return items;
   });
 
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const updateContract = async () => {
     const articleContract = {
@@ -256,27 +279,19 @@ const EditedPage = () => {
       customer: customer,
       executor: executor,
       responsibleOne: responsibleOne.at(1),
-      departmentOne: responsibleOne.at(0), // TODO: Добавить на бэк
+      departmentOne: responsibleOne.at(0),
       responsibleTwo: responsibleTwo.at(1),
-      departmentTwo: responsibleTwo.at(0), // TODO: Добавить на бэк
-      status: status, // TODO: Было states
-      date: date.format("DD-MM-YYYY"), // TODO: Добавить на бэк
-      description: description, // TODO: Добавить на бэк
+      departmentTwo: responsibleTwo.at(0),
+      status: status,
+      date: date.format("DD-MM-YYYY"),
+      description: description,
     };
 
     console.log(articleContract);
 
-    // const articleDate = {
-    //     dateStart: dateData.dateStart,
-    //     description: dateData.description
-    // };
-
     const articleFile = {
       fileUrl: Object.values(fileData.fileName),
     };
-
-    let fd = new FormData();
-    fd.append("files", fileData.fileName);
 
     if (!isNew) {
       // Update
@@ -284,14 +299,6 @@ const EditedPage = () => {
         axios
           .post("http://localhost:8080/update/contract", articleContract)
           .then((response) => setContract(initialFormStateContract)),
-
-        await delay(1000),
-
-        // axios.post('http://localhost:8080/create/date', articleDate)
-        // .then(response => setDateData(initialFormStateDates)),
-
-        // axios.post('http://localhost:8080/create/fileWay', articleFile)
-        // .then(response => setFilesData(initialFormStateFiles))
       ]);
     } else {
       // Create
@@ -299,21 +306,13 @@ const EditedPage = () => {
         axios
           .post("http://localhost:8080/create/contract", articleContract)
           .then((response) => setContract(initialFormStateContract)),
-
-        await delay(1000),
-
-        // axios.post('http://localhost:8080/create/date', articleDate)
-        // .then(response => setDateData(initialFormStateDates)),
-
-        // axios.post('http://localhost:8080/create/fileWay', articleFile)
-        // .then(response => setFilesData(initialFormStateFiles))
       ]);
     }
   };
 
   // ################################################################################ Отображение страницы
 
-  console.log("test: ", object);
+  console.log("Blocks info: ", blocks);
   return (
     <div className="container-input">
       <Header className="impHeader" />
@@ -357,7 +356,7 @@ const EditedPage = () => {
         </label>
 
         <label>
-          Исполнитель:
+          Компания исполнитель:
           <Input
             value={executor}
             type="text"
@@ -367,7 +366,7 @@ const EditedPage = () => {
         </label>
 
         <label>
-          Предмет договора  :
+          Предмет договора :
           <Input
             value={description}
             type="text"
@@ -423,23 +422,109 @@ const EditedPage = () => {
           </Select>
         </label>
 
-        <label className="upload">
-          Файлы:
-          <Form.Item label="" className="uploadFiles">
-            <Upload
-              beforeUpload={() => false}
-              onChange={handleChangeFiles}
-              // action={handleChangeFiles}
-              listType="picture-card"
-              multiple
-            >
-              <button style={{ border: 0, background: "none" }} type="button">
-                <PlusOutlined style={{ color: "white" }} />
-                <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>
-              </button>
-            </Upload>
-          </Form.Item>
-        </label>
+        <div className="stageForm">
+          {blocks.map((block, index) => (
+            <div key={index} className="stages">
+              <label className="dateStartStage">
+                Дата начала этапа:
+                <DatePicker
+                  style={{ height: 50, width: 200 }}
+                  // disabled={true}
+                  // value={date}
+                  name="dateStartStage"
+                  value={block.startDate}
+                  onChange={(date) =>
+                    handleChangeBlocks(index, "startDate", date)
+                  }
+                />
+              </label>
+
+              <label className="descriptionStage">
+                Описание этапа:
+                <Input
+                  style={{ height: 50, width: 400 }}
+                  // value={description}
+                  type="text"
+                  name="descriptionStage"
+                  value={block.description}
+                  onChange={(e) =>
+                    handleChangeBlocks(index, "description", e.target.value)
+                  }
+                />
+              </label>
+
+              <label className="dateEndStage">
+                Дата сдачи этапа:
+                <DatePicker
+                  style={{ height: 50, width: 200 }}
+                  // disabled={true}
+                  // value={date}
+                  name="dateEndStage"
+                  value={block.endDate}
+                  onChange={(date) =>
+                    handleChangeBlocks(index, "endDate", date)
+                  }
+                />
+              </label>
+
+              <Button
+                type="dashed"
+                icon={<MinusCircleOutlined />}
+                onClick={() => removeBlock(index)}
+                className="removeStage"
+              >
+                Удалить этап
+              </Button>
+            </div>
+          ))}
+
+          <Button
+            type="dashed"
+            icon={<PlusOutlined />}
+            onClick={addBlock}
+            className="addStage"
+          >
+            Добавить новый этап
+          </Button>
+        </div>
+
+        <div className="fildFiles">
+          <label className="upload">
+            Файлы договора:
+            <Form.Item label="" className="uploadFiles">
+              <Upload
+                beforeUpload={() => false}
+                onChange={handleChangeFiles}
+                // action={handleChangeFiles}
+                listType="picture-card"
+                multiple
+              >
+                <button style={{ border: 0, background: "none" }} type="button">
+                  <PlusOutlined style={{ color: "white" }} />
+                  <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>
+                </button>
+              </Upload>
+            </Form.Item>
+          </label>
+
+          <label className="upload">
+            Акты и счета:
+            <Form.Item label="" className="uploadFiles">
+              <Upload
+                beforeUpload={() => false}
+                onChange={handleChangeFiles}
+                // action={handleChangeFiles}
+                listType="picture-card"
+                multiple
+              >
+                <button style={{ border: 0, background: "none" }} type="button">
+                  <PlusOutlined style={{ color: "white" }} />
+                  <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>
+                </button>
+              </Upload>
+            </Form.Item>
+          </label>
+        </div>
 
         <Button className="sub" onClick={handleSubmit}>
           Сохранить

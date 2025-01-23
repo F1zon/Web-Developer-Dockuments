@@ -30,10 +30,6 @@ public class InfoController {
         this.fileService = fileService;
     }
 
-    /**
-     * GET запрос для удобства заполнения информации
-     * @return CreateNewContractModel (Заказчики, персонал, статусы)
-     */
     @GetMapping(value = "/info/customers")
     public ResponseEntity<List<CustomerDto>> getInfoCustomer() {
         logger.info("getInfoCustomer");

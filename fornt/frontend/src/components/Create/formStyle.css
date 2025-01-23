@@ -54,3 +54,47 @@ option {
 .sub:hover {
     background: #208ea7;
 }
+
+.stageForm {
+    display: grid;
+    width: 30vw;
+    grid-template-areas: "stg",
+                         "add";
+}
+.stages {
+    display: grid;
+    /* width: 915px; */
+    width: 36vw;
+    height: 70px;
+    
+    grid-template-areas: "dst dt det" ;
+    grid-template-rows: 1fr;
+    margin-top: 70px;
+    grid-area: "stg";
+}
+.dateStartStage {
+    width: 200px;
+    font-size: 20px;
+    grid-area: "dst";
+}
+.descriptionStage {
+    width: 400px;
+    font-size: 20px;
+    grid-area: "dt";
+}
+.dateEndStage {
+    width: 200px;
+    font-size: 20px;
+    grid-area: "det";
+}
+.removeStage {
+    grid-area: "del";
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.addStage {
+    width: 300px;
+    margin-top: 80px;
+    margin-left: 300px;
+    grid-area: "add";
+}
