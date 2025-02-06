@@ -19,12 +19,13 @@ public class FullContractDto {
     private int status;
     private String date;
     private String description;
+    private StageDto[] stageDtoArr;
 
     public FullContractDto(int id, String object, int customer,
                            String executor, int responsibleOne,
                            int departmentOne, int responsibleTwo,
                            int departmentTwo, int status,
-                           String date, String description) {
+                           String date, String description, StageDto[] stageDtoArr) {
         this.id = id;
         this.object = object;
         this.customer = customer;
@@ -36,5 +37,6 @@ public class FullContractDto {
         this.status = status;
         this.date = date;
         this.description = description;
+        this.stageDtoArr = stageDtoArr;
     }
 }

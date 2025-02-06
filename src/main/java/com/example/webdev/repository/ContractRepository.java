@@ -10,10 +10,6 @@ import java.util.List;
 
 public interface ContractRepository extends JpaRepository<ContractDao, Integer> {
 
-    /**
-     * Укороченный запрос для главной страницы
-     * @return Укороченный список строк из таблицы Должности
-     */
     @Query(value = """
             SELECT д.id_contract, д.objects, з.name, д.executor, с.name, о.name, ст.name FROM договоры д
             JOIN заказчики з ON д.customer = з.id
@@ -38,25 +34,12 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
     @Query(value = "SELECT MAX(id_contract) FROM договоры", nativeQuery = true)
     int getNextContactId();
 
-//   Запросы для получения Сотрудников, Заказчиков и Статуса по названию
-    @Query(value = "select id from сотрудники where name = ?1", nativeQuery = true)
-    int findPersonalByFio(String name);
-
-    @Query(value = "select id from заказчики where name = ?1", nativeQuery = true)
-    int findCustomerByTitle(String title);
-
-    @Query(value = "select id from статусы where name = ?1", nativeQuery = true)
-    int findStageByTitle(String title);
-
     @Query(value = "SELECT MAX(id_contract) + 1 FROM договоры", nativeQuery = true)
     int getNexValId();
 
-//    Запросы для конкретного контракта
-//    Заказчик
     @Query(value = "select з.name from договоры д join заказчики з on д.customer = з.id where д.id_contract = ?1", nativeQuery = true)
     String getCustomerById(int id);
 
-//    Ответсвенные
     @Query(value = """
             select id, name, department from сотрудники с
             join договоры д on с.id = д.responsible where д.id_contract = ?1
@@ -74,11 +57,6 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
             join статусы с on д.states = с.id where д.id_contract = ?1
             """, nativeQuery = true)
     String getStatusById(int id);
-
-    @Query(value = """
-                select id_dat,description,contract,date_start from даты where contract = ?1
-                """, nativeQuery = true)
-    String getDatesById(int id);
 
     @Transactional
     @Modifying(clearAutomatically = true)

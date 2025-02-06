@@ -4,6 +4,7 @@ import com.example.webdev.db.dto.*;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
+import com.example.webdev.service.StageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +20,14 @@ public class EditController {
     private final ContractServiceImpl contractService;
     private final DateService dateService;
     private final FileService fileService;
+    private final StageService stageService;
 
     @Autowired
-    public EditController(ContractServiceImpl contractService, DateService dateService, FileService fileService) {
+    public EditController(ContractServiceImpl contractService, DateService dateService, FileService fileService, StageService stageService) {
         this.contractService = contractService;
         this.dateService = dateService;
         this.fileService = fileService;
+        this.stageService = stageService;
     }
 
     //    Отправка данных по ID
@@ -56,11 +59,12 @@ public class EditController {
         PersonalDto personalDtoOne = contractService.readPersonalByIdOne(id);
         PersonalDto personalDtoTwo = contractService.readPersonalByIdTwo(id);
         DateDto dateDto = dateService.findById(id);
+        StageDto[] stageDtos = stageService.findByContractId(id);
 
         return new FullContractDto(componentContractDto.getId(), componentContractDto.getObjectTitle(), componentContractDto.getCustomerId(),
                 componentContractDto.getExecutor(), componentContractDto.getResponsibleId(),
                 personalDtoOne.getDepartmentId(), componentContractDto.getResponsible2Id(),
                 personalDtoTwo.getDepartmentId(), componentContractDto.getStatus(),
-                dateDto.getDateStart(), dateDto.getDescription());
+                dateDto.getDateStart(), dateDto.getDescription(), stageDtos);
     }
 }

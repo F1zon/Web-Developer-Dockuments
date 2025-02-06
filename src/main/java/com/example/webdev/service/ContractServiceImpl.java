@@ -95,19 +95,6 @@ public class ContractServiceImpl {
         return new CustomerDto(id, request);
     }
 
-//    public List<PersonalDto> readPersonalById(int id) {
-//        String[] request1 = repository.getResponsibleById(id).split(",");
-//        String[] request2 = repository.getResponsible2ById(id).split(",");
-//        List<PersonalDto> result = new ArrayList<>();
-//        result.add(new PersonalDto(Integer.parseInt(request1[0]),
-//                request1[1], Integer.parseInt(request1[2])));
-//
-//        result.add(new PersonalDto(Integer.parseInt(request2[0]),
-//                request2[1], Integer.parseInt(request2[2])));
-//
-//        return result;
-//    }
-
     public PersonalDto readPersonalByIdOne(int id) {
         String[] request = repository.getResponsibleById(id).split(",");
         logger.info(Arrays.toString(request));

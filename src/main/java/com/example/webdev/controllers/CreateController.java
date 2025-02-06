@@ -1,6 +1,7 @@
 package com.example.webdev.controllers;
 
 import com.example.webdev.db.dao.DateDao;
+import com.example.webdev.db.dto.StageDto;
 import com.example.webdev.db.model.ContractModel;
 import com.example.webdev.db.model.DateModel;
 import com.example.webdev.db.model.FileModel;
@@ -8,6 +9,7 @@ import com.example.webdev.db.model.FullContractModel;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
+import com.example.webdev.service.StageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +20,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
 @RestController
 public class CreateController {
     private final ContractServiceImpl contractService;
     private final DateService dateService;
     private final FileService fileService;
+    private final StageService stageService;
     private final Logger logger = LoggerFactory.getLogger(MainController.class);
 
     @Autowired
-    public CreateController(ContractServiceImpl contractService, DateService dateService, FileService fileService) {
+    public CreateController(ContractServiceImpl contractService, DateService dateService, FileService fileService, StageService stageService) {
         this.contractService = contractService;
         this.dateService = dateService;
         this.fileService = fileService;
+        this.stageService = stageService;
     }
 
     @PostMapping("/create/contract")
@@ -42,8 +48,25 @@ public class CreateController {
                 model.getResponsibleOne(), model.getResponsibleTwo(),
                 model.getStatus());
         DateModel dateModel = new DateModel(model.getDate(), model.getDescription());
+        StageDto[] arrStageDto = model.getStageDtoArr();
         contractService.save(contractModel);
-        dateService.save(dateModel, contractService.getCreateContractId());
+        int currentId = contractService.getCreateContractId();
+        dateService.save(dateModel, currentId);
+
+        StageDto[] requestStage = stageService.findByContractId(currentId);
+        logger.info("request in bd stage {}", (Object) requestStage);
+
+        if (requestStage == null || requestStage.length == 0) {
+            for (StageDto stage : arrStageDto) {
+                stage.setContract(currentId);
+                logger.info("Creating stage {}", stage.toString());
+                stageService.save(stage);
+            }
+        } else {
+            stageService.synchronizeStages(Arrays.stream(arrStageDto).toList(), currentId);
+        }
+
+
 
         logger.info("Contract is CREATE!");
         return new ResponseEntity<>(HttpStatus.CREATED);

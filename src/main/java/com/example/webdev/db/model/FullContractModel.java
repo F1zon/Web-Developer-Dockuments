@@ -1,5 +1,6 @@
 package com.example.webdev.db.model;
 
+import com.example.webdev.db.dto.StageDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,6 @@ public class FullContractModel {
     private int status;
     private String date;
     private String description;
+//    Данные для этапа
+    private StageDto[] stageDtoArr;
 }

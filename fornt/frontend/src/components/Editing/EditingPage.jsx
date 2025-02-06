@@ -63,21 +63,10 @@ const EditedPage = () => {
   // ################################################################################ Инициализация состояний для форм
 
   //  Состояния для всех данных с бд
-
-  // TODO: Разобрать useState для внесения изменений
   const [customers, setCust] = useState([]);
   const [persons, setPers] = useState([]);
   const [statuses, setStat] = useState([]);
   const [departments, setDep] = useState([]);
-
-  const [currentContract, setCurrentContract] = useState({});
-
-  const [personal, setPersonal] = useState([]);
-  //   const [status, setStatus] = useState([]);
-  const [department, setDepartment] = useState([]);
-  const [datas, setDatas] = useState([]);
-
-  //
 
   const [object, setObject] = useState();
   const [executor, setExecutor] = useState();
@@ -88,12 +77,12 @@ const EditedPage = () => {
   const [responsibleTwo, setResponsibleTwo] = useState();
   const [status, setStatus] = useState();
 
-  //
-
   const [contract, setContract] = useState(initialFormStateContract);
   const [fileData, setFilesData] = useState(initialFormStateFiles);
   const [dateData, setDateData] = useState(initialFormStateDates);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [initialBlocks, setBlocks] = useState([
+    { dateStartStage: dayjs(), descriptionStage: "", dateEndStage: dayjs() },
+  ]);
 
   // ################################################################################ Добаление данных с сервера в состояние форм
 
@@ -106,25 +95,10 @@ const EditedPage = () => {
       .then((data) => setCustomer(data))
       .catch((error) => console.log("Error fetching customer: ", error));
 
-    fetch(`http://localhost:8080/edited/personal?id=${contract_id}`)
-      .then((response) => response.json())
-      .then((data) => setPersonal(data))
-      .catch((error) => console.log("Error fetching personal: ", error));
-
     fetch(`http://localhost:8080/edited/status?id=${contract_id}`)
       .then((response) => response.clone().json())
       .then((data) => setStatus(data))
       .catch((error) => console.log("Error fetching status: ", error));
-
-    fetch(`http://localhost:8080/info/dep`)
-      .then((response) => response.clone().json())
-      .then((data) => setDepartment(data))
-      .catch((error) => console.log("Error fetcheng departments: ", error));
-
-    fetch(`http://localhost:8080/edited/dates?id=${contract_id}`)
-      .then((response) => response.clone().json())
-      .then((data) => setDatas(data))
-      .catch((error) => console.log("Error fetcheng dates: ", error));
 
     if (!isNew) {
       fetch(`http://localhost:8080/edited/contract?id=${contract_id}`)
@@ -138,22 +112,11 @@ const EditedPage = () => {
           setExecutor(data.executor);
           setStatus(data.status);
           setDate(dayjs(data.date.format("DD-MM-YYYY")));
+          setBlocks(data.stageDtoArr);
         })
         .catch((error) =>
           console.log("Error fetcheng currentContract: ", error)
         );
-      //  {
-      //     "id": 7,
-      //     "customerId": 1,
-      //     "responsibleId": 4,
-      //     "departmentIdOne": 4, TODO: Добавить на бэк в ответ
-      //     "responsible2Id": 3,
-      //     "departmentIdTwo": 3, TODO: Добавить на бэк в ответ
-      //     "statesTitle": 6,
-      //     "objectTitle": "Тестовый объект 2",
-      //     "executor": "СИБМАРК Проект"
-      //     "date": test TODO: Добавить в ответ на бэк
-      // }
     }
 
     fetch("http://localhost:8080/info/customers")
@@ -229,21 +192,40 @@ const EditedPage = () => {
   };
 
   // Раболта с блоками
-  const [blocks, setBlocks] = useState([
-    { startDate: null, description: "", endDate: null },
-  ]);
+  // const [blocks, setBlocks] = useState([
+  //   { dateStartStage: dayjs(), descriptionStage: "", dateEndStage: dayjs() },
+  // ]);
+
+  useEffect(() => {
+    if (initialBlocks && Array.isArray(initialBlocks) && initialBlocks.length > 0) {
+      // Преобразуем даты в формат dayjs, если они не в этом формате
+      const formattedBlocks = initialBlocks.map(block => ({
+        ...block,
+        dateStartStage: block.dateStartStage,
+        descriptionStage: block.descriptionStage,
+        dateEndStage: block.dateEndStage,
+      }));
+      setBlocks(formattedBlocks);
+    } else {
+      // Если данных нет, создаем пустой блок по умолчанию
+      setBlocks([{ dateStartStage: dayjs(), descriptionStage: '', dateEndStage: dayjs() }]);
+    }
+  }, [initialBlocks]);
 
   const addBlock = () => {
-    setBlocks([...blocks, { startDate: null, description: "", endDate: null }]);
+    setBlocks([
+      ...initialBlocks,
+      { dateStartStage: dayjs(), descriptionStage: "", dateEndStage: dayjs() },
+    ]);
   };
 
   const removeBlock = (index) => {
-    const newBlocks = blocks.filter((_, i) => i !== index);
+    const newBlocks = initialBlocks.filter((_, i) => i !== index);
     setBlocks(newBlocks);
   };
 
   const handleChangeBlocks = (index, field, value) => {
-    const newBlocks = blocks.map((block, i) => {
+    const newBlocks = initialBlocks.map((block, i) => {
       if (i === index) {
         return { ...block, [field]: value };
       }
@@ -285,6 +267,7 @@ const EditedPage = () => {
       status: status,
       date: date.format("DD-MM-YYYY"),
       description: description,
+      stageDtoArr: initialBlocks,
     };
 
     console.log(articleContract);
@@ -312,7 +295,7 @@ const EditedPage = () => {
 
   // ################################################################################ Отображение страницы
 
-  console.log("Blocks info: ", blocks);
+  console.log("Blocks info: ", initialBlocks);
   return (
     <div className="container-input">
       <Header className="impHeader" />
@@ -423,7 +406,7 @@ const EditedPage = () => {
         </label>
 
         <div className="stageForm">
-          {blocks.map((block, index) => (
+          {initialBlocks.map((block, index) => (
             <div key={index} className="stages">
               <label className="dateStartStage">
                 Дата начала этапа:
@@ -432,9 +415,9 @@ const EditedPage = () => {
                   // disabled={true}
                   // value={date}
                   name="dateStartStage"
-                  value={block.startDate}
+                  value={block.dateStartStage}
                   onChange={(date) =>
-                    handleChangeBlocks(index, "startDate", date)
+                    handleChangeBlocks(index, "dateStartStage", date)
                   }
                 />
               </label>
@@ -446,9 +429,13 @@ const EditedPage = () => {
                   // value={description}
                   type="text"
                   name="descriptionStage"
-                  value={block.description}
+                  value={block.descriptionStage}
                   onChange={(e) =>
-                    handleChangeBlocks(index, "description", e.target.value)
+                    handleChangeBlocks(
+                      index,
+                      "descriptionStage",
+                      e.target.value
+                    )
                   }
                 />
               </label>
@@ -460,9 +447,9 @@ const EditedPage = () => {
                   // disabled={true}
                   // value={date}
                   name="dateEndStage"
-                  value={block.endDate}
+                  value={block.dateEndStage}
                   onChange={(date) =>
-                    handleChangeBlocks(index, "endDate", date)
+                    handleChangeBlocks(index, "dateEndStage", date)
                   }
                 />
               </label>
