@@ -259,9 +259,10 @@ const EditedPage = () => {
     // Добавляем файлы в FormData
     fileData.forEach((file, index) => {
       // newFormData.append(`files[${index}]`, file);  Каждый файл добавляется с уникальным индексом
-      array.fill(file);
+      // array.fill(file);
+      newFormData.append("fileArr", file);
     });
-    newFormData.append('fileArr', array);
+    // newFormData.append('fileArr', array);
 
     // Проверка содержимого formData
     for (let pair of newFormData.entries()) {

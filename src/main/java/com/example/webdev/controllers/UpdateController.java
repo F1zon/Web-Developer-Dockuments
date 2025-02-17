@@ -46,7 +46,7 @@ public class UpdateController {
      */
     @PostMapping(value = "/update/contract", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateContract(@RequestPart("model") String modelJson,
-                                            @RequestPart(value = "fileArr", required = false) List<MultipartFile> files) {
+                                            @RequestPart(value = "fileArr", required = false) MultipartFile[] files) {
         try {
             // Преобразуем JSON-строку в объект FullContractModel
             FullContractModel model = objectMapper.readValue(modelJson, FullContractModel.class);
@@ -73,6 +73,7 @@ public class UpdateController {
 //                    fileService.saveFile(file); // Сохраняем файл
 //                }
 //            }
+            fileService.save(files, model.getId());
 
             return ResponseEntity.ok().build();
         } catch (IOException e) {

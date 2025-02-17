@@ -1,18 +1,19 @@
 package com.example.webdev.db.dao;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "файлы")
 public class FilesDao {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_file")
     private int id;
 
@@ -20,14 +21,12 @@ public class FilesDao {
     private String fileName;
     @Column(name = "contract")
     private int idContact;
+    @Column(name = "name")
+    private String name;
 
-    public FilesDao(String name, int idContact, int id) {
-        this.fileName = name;
+    public FilesDao(String fileName, int idContact, String name) {
+        this.fileName = fileName;
         this.idContact = idContact;
-        this.id = id;
-    }
-
-    public FilesDao() {
-
+        this.name = name;
     }
 }
