@@ -44,6 +44,7 @@ public class MainController {
     public ResponseEntity<ContractDao> deleteContract(@RequestParam int id) {
         log.info("Deleting contract with id {}", id);
         contractService.delete(id);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

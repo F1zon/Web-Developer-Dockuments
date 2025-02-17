@@ -5,14 +5,20 @@ import com.example.webdev.db.model.FullContractModel;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
 @RestController
@@ -21,24 +27,57 @@ public class UpdateController {
     private final DateService dateService;
     private final FileService fileService;
     private final Logger logger = LoggerFactory.getLogger(UpdateController.class);
+    private final ObjectMapper objectMapper; // Для преобразования JSON в объект
 
     @Autowired
-    public UpdateController(ContractServiceImpl contractService, DateService dateService, FileService fileService) {
+    public UpdateController(ContractServiceImpl contractService, DateService dateService, FileService fileService, ObjectMapper objectMapper) {
         this.contractService = contractService;
         this.dateService = dateService;
         this.fileService = fileService;
+        this.objectMapper = objectMapper;
     }
 
-    @PostMapping("/update/contract")
-    public ResponseEntity<?> updateContract(@RequestBody FullContractModel model) {
-        logger.info("Update contract {}", model.getObject());
+    /**
+     * Обновление контракта.
+     *
+     * @param modelJson JSON-строка с данными контракта.
+     * @param files Массив загруженных файлов.
+     * @return ResponseEntity с результатом операции.
+     */
+    @PostMapping(value = "/update/contract", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateContract(@RequestPart("model") String modelJson,
+                                            @RequestPart(value = "fileArr", required = false) List<MultipartFile> files) {
+        try {
+            // Преобразуем JSON-строку в объект FullContractModel
+            FullContractModel model = objectMapper.readValue(modelJson, FullContractModel.class);
+            logger.info("Update contract: {}", model.getObject());
 
-        ContractModel contractModel = new ContractModel(model.getId(), model.getObject(),
-                model.getCustomer(), model.getExecutor(),
-                model.getResponsibleOne(), model.getResponsibleTwo(),
-                model.getStatus());
+            // Создаем объект ContractModel из данных FullContractModel
+            ContractModel contractModel = new ContractModel(
+                    model.getId(),
+                    model.getObject(),
+                    model.getCustomer(),
+                    model.getExecutor(),
+                    model.getResponsibleOne(),
+                    model.getResponsibleTwo(),
+                    model.getStatus()
+            );
 
-        contractService.updateContract(contractModel);
-        return ResponseEntity.ok().build();
+            // Обновляем контракт в базе данных
+            contractService.updateContract(contractModel);
+
+            // Обрабатываем загруженные файлы (если они есть)
+//            if (files != null && !files.isEmpty()) {
+//                for (MultipartFile file : files) {
+//                    logger.info("Received file: {}", file.getOriginalFilename());
+//                    fileService.saveFile(file); // Сохраняем файл
+//                }
+//            }
+
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            logger.error("Error parsing JSON or processing files: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("Ошибка при обработке данных");
+        }
     }
 }

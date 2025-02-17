@@ -47,9 +47,11 @@ public class CreateController {
                 model.getCustomer(), model.getExecutor(),
                 model.getResponsibleOne(), model.getResponsibleTwo(),
                 model.getStatus());
+
         DateModel dateModel = new DateModel(model.getDate(), model.getDescription());
         StageDto[] arrStageDto = model.getStageDtoArr();
         contractService.save(contractModel);
+
         int currentId = contractService.getCreateContractId();
         dateService.save(dateModel, currentId);
 

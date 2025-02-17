@@ -52,7 +52,7 @@ const EditedPage = () => {
   };
 
   const initialFormStateFiles = {
-    fileName: new Array(),
+    fileArr: new Array(),
   };
 
   const initialFormStateDates = {
@@ -84,6 +84,8 @@ const EditedPage = () => {
     { dateStartStage: dayjs(), descriptionStage: "", dateEndStage: dayjs() },
   ]);
 
+  const [formData, setFormData] = useState(new FormData());
+
   // ################################################################################ Добаление данных с сервера в состояние форм
 
   useEffect(() => {
@@ -111,7 +113,8 @@ const EditedPage = () => {
           setResponsibleTwo([data.departmentTwo, data.responsibleTwo]);
           setExecutor(data.executor);
           setStatus(data.status);
-          setDate(dayjs(data.date.format("DD-MM-YYYY")));
+          setDate(dayjs(data.date));
+          console.log(data.stageDtoArr);
           setBlocks(data.stageDtoArr);
         })
         .catch((error) =>
@@ -170,47 +173,23 @@ const EditedPage = () => {
     setDateData({ ...dateData, [event.target.name]: event.target.value });
   };
 
-  const handleChangeFiles = ({ fileList: filus }) => {
-    // console.log(typeof(filus));
-    // var tmpFiles = fileData.fileName;
-    // tmpFiles.push(new File(filus));
+  const handleChangeFiles = (info) => {
+    const { fileList } = info; // Получаем список файлов из события
 
-    // console.log(Object.values(tmpFiles));
+    // Извлекаем реальные файлы из originFileObj
+    const files = fileList
+      .map((file) => file.originFileObj) // Получаем originFileObj
+      .filter(Boolean); // Фильтруем undefined или null
 
-    // console.log(filus);
-    setFilesData({ fileName: filus });
+    setFilesData(files); // Сохраняем массив файлов в состоянии
+    console.log("Массив файлов:", fileData);
   };
 
   const handleSubmit = (async) => {
     updateContract();
-    // postDate();
-    // postFile();
-
     alert("Контракт сохранён");
-
     navigate("/");
   };
-
-  // Раболта с блоками
-  // const [blocks, setBlocks] = useState([
-  //   { dateStartStage: dayjs(), descriptionStage: "", dateEndStage: dayjs() },
-  // ]);
-
-  useEffect(() => {
-    if (initialBlocks && Array.isArray(initialBlocks) && initialBlocks.length > 0) {
-      // Преобразуем даты в формат dayjs, если они не в этом формате
-      const formattedBlocks = initialBlocks.map(block => ({
-        ...block,
-        dateStartStage: block.dateStartStage,
-        descriptionStage: block.descriptionStage,
-        dateEndStage: block.dateEndStage,
-      }));
-      setBlocks(formattedBlocks);
-    } else {
-      // Если данных нет, создаем пустой блок по умолчанию
-      setBlocks([{ dateStartStage: dayjs(), descriptionStage: '', dateEndStage: dayjs() }]);
-    }
-  }, [initialBlocks]);
 
   const addBlock = () => {
     setBlocks([
@@ -270,24 +249,42 @@ const EditedPage = () => {
       stageDtoArr: initialBlocks,
     };
 
-    console.log(articleContract);
+    const newFormData = new FormData();
+    newFormData.append("model", JSON.stringify(articleContract));
 
-    const articleFile = {
-      fileUrl: Object.values(fileData.fileName),
-    };
+    // Добавляем файлы из fileData
+    // newFormData.append("fileArr", fileData);
+    const length = fileData.length;
+    const array = new Array(length);
+    // Добавляем файлы в FormData
+    fileData.forEach((file, index) => {
+      // newFormData.append(`files[${index}]`, file);  Каждый файл добавляется с уникальным индексом
+      array.fill(file);
+    });
+    newFormData.append('fileArr', array);
+
+    // Проверка содержимого formData
+    for (let pair of newFormData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
     if (!isNew) {
       // Update
-      axios.all([
-        axios
-          .post("http://localhost:8080/update/contract", articleContract)
-          .then((response) => setContract(initialFormStateContract)),
-      ]);
+      try {
+        const response = await axios.post("http://localhost:8080/update/contract", newFormData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        console.log(response.data);
+    } catch (error) {
+        console.error("Ошибка при отправке данных:", error);
+    }
     } else {
       // Create
       axios.all([
         axios
-          .post("http://localhost:8080/create/contract", articleContract)
+          .post("http://localhost:8080/create/contract", newFormData)
           .then((response) => setContract(initialFormStateContract)),
       ]);
     }
@@ -295,7 +292,7 @@ const EditedPage = () => {
 
   // ################################################################################ Отображение страницы
 
-  console.log("Blocks info: ", initialBlocks);
+  console.log("fileData: ", fileData);
   return (
     <div className="container-input">
       <Header className="impHeader" />
@@ -415,7 +412,7 @@ const EditedPage = () => {
                   // disabled={true}
                   // value={date}
                   name="dateStartStage"
-                  value={block.dateStartStage}
+                  value={dayjs(block.dateStartStage)}
                   onChange={(date) =>
                     handleChangeBlocks(index, "dateStartStage", date)
                   }
@@ -447,7 +444,7 @@ const EditedPage = () => {
                   // disabled={true}
                   // value={date}
                   name="dateEndStage"
-                  value={block.dateEndStage}
+                  value={dayjs(block.dateEndStage)}
                   onChange={(date) =>
                     handleChangeBlocks(index, "dateEndStage", date)
                   }
@@ -475,6 +472,7 @@ const EditedPage = () => {
           </Button>
         </div>
 
+        {/* Доавить маппинг */}
         <div className="fildFiles">
           <label className="upload">
             Файлы договора:
@@ -494,7 +492,7 @@ const EditedPage = () => {
             </Form.Item>
           </label>
 
-          <label className="upload">
+          {/* <label className="upload">
             Акты и счета:
             <Form.Item label="" className="uploadFiles">
               <Upload
@@ -510,7 +508,7 @@ const EditedPage = () => {
                 </button>
               </Upload>
             </Form.Item>
-          </label>
+          </label> */}
         </div>
 
         <Button className="sub" onClick={handleSubmit}>

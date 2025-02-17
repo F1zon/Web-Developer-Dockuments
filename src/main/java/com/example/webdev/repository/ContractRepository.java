@@ -67,6 +67,8 @@ public interface ContractRepository extends JpaRepository<ContractDao, Integer> 
                     select id_contract from договоры left outer join даты on договоры.id_contract = даты.contract
                                        where даты.contract is null
                 );
+
+                delete from этапы where contract = ?1;
                 """, nativeQuery = true)
     void deleteContractAndDateById(long id);
 
