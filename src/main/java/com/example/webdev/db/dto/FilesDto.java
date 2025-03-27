@@ -11,4 +11,5 @@ public class FilesDto {
     int id;
     String fileWay;
     int contract;
+    String name;
 }

@@ -10,16 +10,16 @@ import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
 import com.example.webdev.service.StageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
@@ -30,63 +30,68 @@ public class CreateController {
     private final FileService fileService;
     private final StageService stageService;
     private final Logger logger = LoggerFactory.getLogger(MainController.class);
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public CreateController(ContractServiceImpl contractService, DateService dateService, FileService fileService, StageService stageService) {
+    public CreateController(ContractServiceImpl contractService,
+                            DateService dateService,
+                            FileService fileService,
+                            StageService stageService,
+                            ObjectMapper objectMapper) {
         this.contractService = contractService;
         this.dateService = dateService;
         this.fileService = fileService;
         this.stageService = stageService;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping("/create/contract")
-    public ResponseEntity<?> createContract(@RequestBody FullContractModel model) {
-        logger.info("Created contract..... {}", model.getId());
+    public ResponseEntity<?> createContract(@RequestPart("model") String modelJson,
+                                            @RequestPart(value = "fileArr", required = false) MultipartFile[] files) {
 
-        ContractModel contractModel = new ContractModel(model.getId(), model.getObject(),
-                model.getCustomer(), model.getExecutor(),
-                model.getResponsibleOne(), model.getResponsibleTwo(),
-                model.getStatus());
+        try {
+            // Преобразуем JSON-строку в объект FullContractModel
+            FullContractModel model = objectMapper.readValue(modelJson, FullContractModel.class);
+            logger.info("Update contract: {}", model.getObject());
 
-        DateModel dateModel = new DateModel(model.getDate(), model.getDescription());
-        StageDto[] arrStageDto = model.getStageDtoArr();
-        contractService.save(contractModel);
+            ContractModel contractModel = new ContractModel(model.getId(), model.getObject(),
+                    model.getCustomer(),
+                    model.getExecutor(),
+                    model.getResponsibleOne(),
+                    model.getResponsibleTwo(),
+                    model.getStatus()
+            );
 
-        int currentId = contractService.getCreateContractId();
-        dateService.save(dateModel, currentId);
+            DateModel dateModel = new DateModel(model.getDate(), model.getDescription());
+            StageDto[] arrStageDto = model.getStageDtoArr();
+            contractService.save(contractModel);
 
-        StageDto[] requestStage = stageService.findByContractId(currentId);
-        logger.info("request in bd stage {}", (Object) requestStage);
+            int currentId = contractService.getCreateContractId();
+            dateService.save(dateModel, currentId);
 
-        if (requestStage == null || requestStage.length == 0) {
-            for (StageDto stage : arrStageDto) {
-                stage.setContract(currentId);
-                logger.info("Creating stage {}", stage.toString());
-                stageService.save(stage);
+            StageDto[] requestStage = stageService.findByContractId(currentId);
+            logger.info("request in bd stage {}", (Object) requestStage);
+
+            if (requestStage == null || requestStage.length == 0) {
+                for (StageDto stage : arrStageDto) {
+                    stage.setContract(currentId);
+                    logger.info("Creating stage {}", stage.toString());
+                    stageService.save(stage);
+                }
+            } else {
+                stageService.synchronizeStages(Arrays.stream(arrStageDto).toList(), currentId);
             }
-        } else {
-            stageService.synchronizeStages(Arrays.stream(arrStageDto).toList(), currentId);
+
+            // Обрабатываем загруженные файлы (если они есть)
+            if (files != null && files.length > 0) {
+                fileService.save(files, currentId);
+            }
+
+            logger.info("Contract is CREATE!");
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (IOException e) {
+            logger.error("Error parsing JSON or processing file: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("Ошибка при обработке данных");
         }
-
-
-
-        logger.info("Contract is CREATE!");
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PostMapping("/create/date")
-    public ResponseEntity<DateDao> createDate(@RequestBody DateModel model) {
-        logger.info("Created dates.....");
-
-        dateService.save(model, contractService.getCreateContractId());
-        logger.info("Date is CREATE!");
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PostMapping("/create/fileWay")
-    public ResponseEntity<?> creteFile(@RequestBody FileModel filesModel) {
-
-//        TODO : Доработать хранение файов
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

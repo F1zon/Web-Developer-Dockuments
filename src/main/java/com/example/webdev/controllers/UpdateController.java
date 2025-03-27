@@ -1,10 +1,13 @@
 package com.example.webdev.controllers;
 
+import com.example.webdev.db.dto.StageDto;
 import com.example.webdev.db.model.ContractModel;
+import com.example.webdev.db.model.DateModel;
 import com.example.webdev.db.model.FullContractModel;
 import com.example.webdev.service.ContractServiceImpl;
 import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
+import com.example.webdev.service.StageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.slf4j.Logger;
@@ -28,13 +31,19 @@ public class UpdateController {
     private final FileService fileService;
     private final Logger logger = LoggerFactory.getLogger(UpdateController.class);
     private final ObjectMapper objectMapper; // Для преобразования JSON в объект
+    private final StageService stageService;
 
     @Autowired
-    public UpdateController(ContractServiceImpl contractService, DateService dateService, FileService fileService, ObjectMapper objectMapper) {
+    public UpdateController(ContractServiceImpl contractService,
+                            DateService dateService,
+                            FileService fileService,
+                            ObjectMapper objectMapper,
+                            StageService stageService) {
         this.contractService = contractService;
         this.dateService = dateService;
         this.fileService = fileService;
         this.objectMapper = objectMapper;
+        this.stageService = stageService;
     }
 
     /**
@@ -63,17 +72,34 @@ public class UpdateController {
                     model.getStatus()
             );
 
+            DateModel dateModel = new DateModel(
+                    model.getDate(),
+                    model.getDescription()
+            );
+
+            StageDto[] arrStageDto = model.getStageDtoArr();
+
+            StageDto[] requestStage = stageService.findByContractId(model.getId());
+            logger.info("request in bd stage {}", (Object) requestStage);
+
+            if (requestStage == null || requestStage.length == 0) {
+                for (StageDto stage : arrStageDto) {
+                    stage.setContract(model.getId());
+                    logger.info("Creating stage {}", stage.toString());
+                    stageService.save(stage);
+                }
+            } else {
+                stageService.synchronizeStages(Arrays.stream(arrStageDto).toList(), model.getId());
+            }
+
             // Обновляем контракт в базе данных
             contractService.updateContract(contractModel);
+            dateService.save(dateModel, model.getId());
 
             // Обрабатываем загруженные файлы (если они есть)
-//            if (files != null && !files.isEmpty()) {
-//                for (MultipartFile file : files) {
-//                    logger.info("Received file: {}", file.getOriginalFilename());
-//                    fileService.saveFile(file); // Сохраняем файл
-//                }
-//            }
-            fileService.save(files, model.getId());
+            if (files != null && files.length > 0) {
+                fileService.save(files, model.getId());
+            }
 
             return ResponseEntity.ok().build();
         } catch (IOException e) {

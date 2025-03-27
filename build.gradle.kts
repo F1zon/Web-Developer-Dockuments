@@ -28,6 +28,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.2.5")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    // JWT - JSON Web Token
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+
+    // javax
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    compileOnly("javax.servlet:javax.servlet-api:4.0.1")
+
 
 //    Отложенно до создания полноценной бизнес логики
 //    implementation("org.springframework.boot:spring-boot-starter-security")

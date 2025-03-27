@@ -31,6 +31,7 @@ import {
 } from "antd";
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const EditedPage = () => {
   const isCalledRef = React.useRef(false);
@@ -76,6 +77,7 @@ const EditedPage = () => {
   const [description, setDescription] = useState();
   const [responsibleTwo, setResponsibleTwo] = useState();
   const [status, setStatus] = useState();
+  const [files, setFiles] = useState();
 
   const [contract, setContract] = useState(initialFormStateContract);
   const [fileData, setFilesData] = useState(initialFormStateFiles);
@@ -85,6 +87,7 @@ const EditedPage = () => {
   ]);
 
   const [formData, setFormData] = useState(new FormData());
+  const [fileList, setFileList] = useState([]); // Состояние для хранения fileList
 
   // ################################################################################ Добаление данных с сервера в состояние форм
 
@@ -114,8 +117,17 @@ const EditedPage = () => {
           setExecutor(data.executor);
           setStatus(data.status);
           setDate(dayjs(data.date));
-          console.log(data.stageDtoArr);
           setBlocks(data.stageDtoArr);
+          setFiles(data.fileNames);
+          const serverFiles = data.fileNames;
+
+          // Создаем fileList только после получения данных
+          const formattedFileList = serverFiles.map((fileName, index) => ({
+            uid: index.toString(),
+            name: fileName,
+            status: "done",
+          }));
+          setFileList(formattedFileList);
         })
         .catch((error) =>
           console.log("Error fetcheng currentContract: ", error)
@@ -214,7 +226,6 @@ const EditedPage = () => {
   };
 
   const navigate = useNavigate();
-  // const formatedDate = dayjs(datas.dateStart);
 
   const optionsDep = departments.map((dep) => {
     const items = {
@@ -230,8 +241,6 @@ const EditedPage = () => {
 
     return items;
   });
-
-  // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const updateContract = async () => {
     const articleContract = {
@@ -252,17 +261,12 @@ const EditedPage = () => {
     const newFormData = new FormData();
     newFormData.append("model", JSON.stringify(articleContract));
 
-    // Добавляем файлы из fileData
-    // newFormData.append("fileArr", fileData);
     const length = fileData.length;
     const array = new Array(length);
     // Добавляем файлы в FormData
     fileData.forEach((file, index) => {
-      // newFormData.append(`files[${index}]`, file);  Каждый файл добавляется с уникальным индексом
-      // array.fill(file);
       newFormData.append("fileArr", file);
     });
-    // newFormData.append('fileArr', array);
 
     // Проверка содержимого formData
     for (let pair of newFormData.entries()) {
@@ -272,15 +276,19 @@ const EditedPage = () => {
     if (!isNew) {
       // Update
       try {
-        const response = await axios.post("http://localhost:8080/update/contract", newFormData, {
+        const response = await axios.post(
+          "http://localhost:8080/update/contract",
+          newFormData,
+          {
             headers: {
-                "Content-Type": "multipart/form-data",
+              "Content-Type": "multipart/form-data",
             },
-        });
+          }
+        );
         console.log(response.data);
-    } catch (error) {
+      } catch (error) {
         console.error("Ошибка при отправке данных:", error);
-    }
+      }
     } else {
       // Create
       axios.all([
@@ -291,9 +299,47 @@ const EditedPage = () => {
     }
   };
 
+  // Обработчик скачивания файла
+  const handleDownload = async (fileName) => {
+    console.log("File name: ", fileName);
+
+    try {
+      // Выполняем GET-запрос с использованием fetch
+      const response = await fetch(
+        `http://localhost:8080/download?id=${contract_id}&fileName=${fileName}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json", // Указываем тип контента (если требуется)
+          },
+        }
+      );
+
+      // Проверяем, успешен ли запрос
+      if (!response.ok) {
+        throw new Error(`Ошибка при скачивании файла: ${response.statusText}`);
+      }
+
+      // Получаем бинарные данные файла
+      const blob = await response.blob();
+
+      // Создаем ссылку для скачивания
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName); // Устанавливаем имя файла
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Ошибка при скачивании файла:", error);
+      message.error("Не удалось скачать файл.");
+    }
+  };
+
   // ################################################################################ Отображение страницы
 
-  console.log("fileData: ", fileData);
+  console.log("files: ", files);
   return (
     <div className="container-input">
       <Header className="impHeader" />
@@ -473,7 +519,6 @@ const EditedPage = () => {
           </Button>
         </div>
 
-        {/* Доавить маппинг */}
         <div className="fildFiles">
           <label className="upload">
             Файлы договора:
@@ -481,7 +526,6 @@ const EditedPage = () => {
               <Upload
                 beforeUpload={() => false}
                 onChange={handleChangeFiles}
-                // action={handleChangeFiles}
                 listType="picture-card"
                 multiple
               >
@@ -490,6 +534,22 @@ const EditedPage = () => {
                   <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>
                 </button>
               </Upload>
+            </Form.Item>
+          </label>
+
+          <label className="download">
+            Файлы для скачивания:
+            <Form.Item label="" className="downloadFiles">
+              <Upload
+                fileList={fileList}
+                onPreview={(file) => handleDownload(file.name)} // Обработчик скачивания
+                showUploadList={{
+                  showDownloadIcon: true, // Показывать иконку скачивания
+                  showRemoveIcon: false, // Не показывать иконку удаления
+                }}
+                listType="picture-card"
+                multiple
+              ></Upload>
             </Form.Item>
           </label>
 

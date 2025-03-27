@@ -6,11 +6,18 @@ import com.example.webdev.service.DateService;
 import com.example.webdev.service.FileService;
 import com.example.webdev.service.StageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,11 +67,32 @@ public class EditController {
         PersonalDto personalDtoTwo = contractService.readPersonalByIdTwo(id);
         DateDto dateDto = dateService.findById(id);
         StageDto[] stageDtos = stageService.findByContractId(id);
+        List<String> files = fileService.getFilesNamesByIdContract(id);
 
         return new FullContractDto(componentContractDto.getId(), componentContractDto.getObjectTitle(), componentContractDto.getCustomerId(),
                 componentContractDto.getExecutor(), componentContractDto.getResponsibleId(),
                 personalDtoOne.getDepartmentId(), componentContractDto.getResponsible2Id(),
                 personalDtoTwo.getDepartmentId(), componentContractDto.getStatus(),
-                dateDto.getDateStart(), dateDto.getDescription(), stageDtos);
+                dateDto.getDateStart(), dateDto.getDescription(), stageDtos, files);
+    }
+
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadFile(
+            @RequestParam int id,
+            @RequestParam String fileName) throws MalformedURLException {
+        String uploadDir = "../files/contr" + id;
+        Path filePath = Paths.get(uploadDir).resolve(fileName).normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+
+        // Проверяем, существует ли файл
+        if (!resource.exists()) {
+            throw new RuntimeException("Файл не найден: " + fileName);
+        }
+
+        // Возвращаем файл как ResponseEntity
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 }

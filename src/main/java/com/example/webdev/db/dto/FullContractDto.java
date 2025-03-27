@@ -2,6 +2,9 @@ package com.example.webdev.db.dto;
 
 import lombok.*;
 
+import java.io.File;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,12 +23,14 @@ public class FullContractDto {
     private String date;
     private String description;
     private StageDto[] stageDtoArr;
+    private List<String> fileNames;
 
     public FullContractDto(int id, String object, int customer,
                            String executor, int responsibleOne,
                            int departmentOne, int responsibleTwo,
                            int departmentTwo, int status,
-                           String date, String description, StageDto[] stageDtoArr) {
+                           String date, String description, StageDto[] stageDtoArr,
+                           List<String> fileNames) {
         this.id = id;
         this.object = object;
         this.customer = customer;
@@ -38,5 +43,6 @@ public class FullContractDto {
         this.date = date;
         this.description = description;
         this.stageDtoArr = stageDtoArr;
+        this.fileNames = fileNames;
     }
 }

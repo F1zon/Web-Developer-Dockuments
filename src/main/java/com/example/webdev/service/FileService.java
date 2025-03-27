@@ -1,6 +1,7 @@
 package com.example.webdev.service;
 
 import com.example.webdev.db.dao.FilesDao;
+import com.example.webdev.db.dto.FilesDto;
 import com.example.webdev.db.model.FileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FileService {
@@ -146,6 +151,13 @@ public class FileService {
 //        return new FilesDao(idContract, file., fileRepository.getNexValId());
 //    }
 
+    private FilesDto createFilesDto(FilesDao file) {
+        return new FilesDto(file.getId(),
+                file.getFileWay(),
+                file.getIdContact(),
+                file.getName());
+    }
+
     public void save(MultipartFile[] files, int idContract) throws IOException {
         File[] arr = convertMultipartFilesToFiles(files, "../files/contr" + idContract);
         saveFilesToDirectory(arr, idContract);
@@ -158,4 +170,17 @@ public class FileService {
 //        deleteFiles(arr);
     }
 
+    public FilesDto[] getFilesByIdContract(int idContract) {
+        FilesDao[] filesDaos = fileRepository.getFilesByContractId(idContract);
+        FilesDto[] filesDtos = new FilesDto[filesDaos.length];
+        for (int i = 0; i < filesDaos.length; i++) {
+            filesDtos[i] = createFilesDto(filesDaos[i]);
+        }
+
+        return filesDtos;
+    }
+
+    public List<String> getFilesNamesByIdContract(int idContract) {
+        return fileRepository.getNameByContractId(idContract);
+    }
 }
