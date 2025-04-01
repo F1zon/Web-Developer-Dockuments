@@ -24,35 +24,29 @@ repositories {
 }
 
 dependencies {
-//    implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.2.5")
     implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.security:spring-security-test")
 
-    // JWT - JSON Web Token
-    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+    //JWT
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
 
-    // javax
-    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
     compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 
-
-//    Отложенно до создания полноценной бизнес логики
-//    implementation("org.springframework.boot:spring-boot-starter-security")
-//    testImplementation("org.springframework.security:spring-security-test")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
-    // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation("org.postgresql:postgresql:42.7.3")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    // https://mvnrepository.com/artifact/org.modelmapper.extensions/modelmapper-spring
     implementation("org.modelmapper.extensions:modelmapper-spring:3.2.0")
+
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
+    implementation("org.springframework.security:spring-security-oauth2-authorization-server:1.4.2")
 }
 
 tasks.withType<Test> {
