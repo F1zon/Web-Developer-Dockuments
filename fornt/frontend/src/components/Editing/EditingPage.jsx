@@ -203,6 +203,10 @@ const EditedPage = () => {
     navigate("/");
   };
 
+  const handleFin = (async) => {
+    navigate("/finance?id=" + contract_id);
+  }
+
   const addBlock = () => {
     setBlocks([
       ...initialBlocks,
@@ -574,6 +578,10 @@ const EditedPage = () => {
 
         <Button className="sub" onClick={handleSubmit}>
           Сохранить
+        </Button>
+
+        <Button className="sub" onClick={handleFin}>
+          Сводка
         </Button>
       </Form>
     </div>

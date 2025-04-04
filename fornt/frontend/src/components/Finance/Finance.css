@@ -1,0 +1,67 @@
+.stagesNew {
+    display: grid;
+    /* width: 915px; */
+    width: 70vw;
+    height: 20vh;
+    margin-top: 50px;
+    
+    grid-template-areas: "fb fb fb fb fb fb" ;
+    grid-area: "stg";
+}
+
+/* Для финансов */
+.contractForm {
+    display: grid;
+    grid-template-rows: 0.5fr;
+    grid-template-areas: "mds nc i r s"
+}
+
+.mainDateStart {
+    width: 25vw;
+    grid-area: "mds";
+}
+
+.numberContract {
+    width: 25vw;
+    margin-left: -40vw;
+    grid-area: "nc";
+}
+
+.Item {
+    width: 25vw;
+    grid-area: "i";
+}
+
+.res {
+    width: 25vw;
+    margin-left: -40vw;
+    grid-area: "r";
+}
+
+.sum {
+    width: 25vw;
+    grid-area: "s";
+}
+
+.sum Input {
+    font-size: bold;
+}
+
+.formBlock {
+    width: 200px;
+    height: 50px;
+    font-size: 16px;
+    grid-area: "fb";
+}
+
+.addStageNew {
+    width: 300px;
+    margin-left: 55vw;
+    margin-top: -3vh;
+    grid-area: "add";
+}
+
+.removeStageNew {
+    width: 300px;
+    margin-top: 4vh;
+}

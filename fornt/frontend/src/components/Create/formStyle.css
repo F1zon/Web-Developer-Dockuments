@@ -64,7 +64,7 @@ option {
 .stages {
     display: grid;
     /* width: 915px; */
-    width: 36vw;
+    width: 30vw;
     height: 70px;
     
     grid-template-areas: "dst dt det" ;
@@ -72,6 +72,9 @@ option {
     margin-top: 70px;
     grid-area: "stg";
 }
+
+
+
 .dateStartStage {
     width: 200px;
     font-size: 20px;
@@ -86,15 +89,19 @@ option {
     width: 200px;
     font-size: 20px;
     grid-area: "det";
+    margin-left: 20px;
 }
 .removeStage {
     grid-area: "del";
+    width: 200px;
     margin-top: 20px;
     margin-left: 20px;
 }
 .addStage {
-    width: 300px;
+    width: 200px;
     margin-top: 80px;
-    margin-left: 300px;
+    margin-left: 240px;
     grid-area: "add";
 }
+
+
