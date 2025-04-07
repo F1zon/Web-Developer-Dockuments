@@ -75,6 +75,105 @@ const FinancePage = () => {
 
   const updateFincace = async () => {};
 
+  // Состояние для хранения данных таблицы
+  const [data, setData] = useState([]);
+
+  // Состояние для управления видимостью модального окна редактирования
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Состояние для управления видимостью модального окна добавления
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Состояние для хранения данных выбранной строки (для редактирования)
+  const [editingRow, setEditingRow] = useState(null);
+
+  // Состояние для хранения новых данных (для добавления)
+  const [newRow, setNewRow] = useState({
+    date_formation: "",
+    number: "",
+    item: "",
+    responsible_department: "",
+    amount: "",
+  });
+
+  // Имитация загрузки данных с сервера
+  useEffect(() => {
+    const fetchData = async () => {
+      const serverData = [
+        {
+          id: 1,
+          date_formation: "2023-10-01",
+          number: "12345",
+          item: "Товар A",
+          responsible_department: "Отдел 1",
+          amount: "1000",
+        },
+        {
+          id: 2,
+          date_formation: "2023-10-02",
+          number: "67890",
+          item: "Товар B",
+          responsible_department: "Отдел 2",
+          amount: "2000",
+        },
+      ];
+      setData(serverData);
+    };
+    fetchData();
+  }, []);
+
+  // Обработчик двойного клика на строку
+  const handleRowDoubleClick = (row) => {
+    setEditingRow(row); // Сохраняем данные строки для редактирования
+    setIsEditModalOpen(true); // Открываем модальное окно редактирования
+  };
+
+  // Обработчик изменения полей формы добавления
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewRow((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Обработчик отправки формы добавления
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+
+    // Генерируем уникальный ID для новой строки
+    const newId =
+      data.length > 0 ? Math.max(...data.map((item) => item.id)) + 1 : 1;
+
+    // Создаем новую строку
+    const newRowWithId = { id: newId, ...newRow };
+
+    try {
+      // Имитация отправки данных на сервер
+      await fetch("https://example.com/api/data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newRowWithId),
+      });
+
+      // Обновляем состояние таблицы
+      setData((prev) => [...prev, newRowWithId]);
+
+      // Очищаем форму добавления
+      setNewRow({
+        date_formation: "",
+        number: "",
+        item: "",
+        responsible_department: "",
+        amount: "",
+      });
+
+      // Закрываем модальное окно
+      setIsAddModalOpen(false);
+    } catch (error) {
+      console.error("Ошибка при добавлении данных:", error);
+    }
+  };
+
   return (
     <div className="container-input">
       <Header className="impHeader" />
@@ -92,253 +191,170 @@ const FinancePage = () => {
         </p>
       </div>
 
-      <div className="contractForm">
-        <Form method="post" className="inpForm" onSubmit={handleSubmit}>
-          <label className="mainDateStart">
-            Дата добавления:
-            <DatePicker
-              style={{ height: 50 }}
-              // disabled={true}
-              //   value={date}
-              name="dateStart"
-              //   onChange={(date) => setDate(date)}
-            />
-          </label>
+      <div className="table-container">
+        {/* Кнопка для добавления новых данных */}
+        <button onClick={() => setIsAddModalOpen(true)} className="add-button">
+          Добавить данные
+        </button>
 
-          <label className="numberContract">
-            Номер:
-            <Input
-              // value={object}
-              type="text"
-              name="objects"
-              // onChange={(event) => setObject(event.target.value)}
-            />
-          </label>
-
-          <label className="Item">
-            Предмет:
-            <Input
-              // value={object}
-              type="text"
-              name="objects"
-              // onChange={(event) => setObject(event.target.value)}
-            />
-          </label>
-
-          <label className="res">
-            Ответсвенный:
-            <Cascader
-              // value={responsibleOne}
-              name="responsible"
-              style={{ width: "100%", color: "black", height: 50 }}
-              // options={optionsDep}
-              // onChange={(value) => setResponsibleOne(value)}
-            />
-          </label>
-
-          <label className="sum">
-            Сумма:
-            <Input
-              // value={object}
-              type="text"
-              name="objects"
-              // onChange={(event) => setObject(event.target.value)}
-            />
-          </label>
-
-          <div className="xD"></div>
-
-          <div className="stageFormNew">
-            {initialBlocks.map((block, index) => (
-              <div key={index} className="stagesNew">
-                <label className="formBlock">
-                  Название:
-                  <Input
-                    // value={description}
-                    type="text"
-                    name="descriptionStage"
-                    value={block.descriptionStage}
-                    onChange={(e) =>
-                      handleChangeBlocks(
-                        index,
-                        "descriptionStage",
-                        e.target.value
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Дата начала этапа:
-                  <DatePicker
-                    // disabled={true}
-                    // value={date}
-                    name="dateStartStage"
-                    value={dayjs(block.dateStartStage)}
-                    onChange={(date) =>
-                      handleChangeBlocks(index, "dateStartStage", date)
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Дата окончания этапа:
-                  <DatePicker
-                    // disabled={true}
-                    // value={date}
-                    name="dateEndStage"
-                    value={dayjs(block.dateEndStage)}
-                    onChange={(date) =>
-                      handleChangeBlocks(index, "dateEndStage", date)
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Сумма:
-                  <Input
-                    // value={description}
-                    type="text"
-                    name="descriptionStage"
-                    value={block.descriptionStage}
-                    onChange={(e) =>
-                      handleChangeBlocks(
-                        index,
-                        "descriptionStage",
-                        e.target.value
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  № Счёта:
-                  <Input
-                    // value={description}
-                    type="text"
-                    name="descriptionStage"
-                    value={block.descriptionStage}
-                    onChange={(e) =>
-                      handleChangeBlocks(
-                        index,
-                        "descriptionStage",
-                        e.target.value
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Дата счёта:
-                  <DatePicker
-                    
-                    // disabled={true}
-                    // value={date}
-                    name="dateEndStage"
-                    value={dayjs(block.dateEndStage)}
-                    onChange={(date) =>
-                      handleChangeBlocks(index, "dateEndStage", date)
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Планируемая дата оплаты:
-                  <DatePicker
-                    
-                    // disabled={true}
-                    // value={date}
-                    name="dateEndStage"
-                    value={dayjs(block.dateEndStage)}
-                    onChange={(date) =>
-                      handleChangeBlocks(index, "dateEndStage", date)
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Фактическая дата оплаты:
-                  <DatePicker
-                    
-                    // disabled={true}
-                    // value={date}
-                    name="dateEndStage"
-                    value={dayjs(block.dateEndStage)}
-                    onChange={(date) =>
-                      handleChangeBlocks(index, "dateEndStage", date)
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  № Акта:
-                  <Input
-                    // value={description}
-                    type="text"
-                    name="descriptionStage"
-                    value={block.descriptionStage}
-                    onChange={(e) =>
-                      handleChangeBlocks(
-                        index,
-                        "descriptionStage",
-                        e.target.value
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Дата акта:
-                  <DatePicker
-                    
-                    // disabled={true}
-                    // value={date}
-                    name="dateEndStage"
-                    value={dayjs(block.dateEndStage)}
-                    onChange={(date) =>
-                      handleChangeBlocks(index, "dateEndStage", date)
-                    }
-                  />
-                </label>
-
-                <label className="formBlock">
-                  Сумма акта:
-                  <Input
-                    // value={description}
-                    type="text"
-                    name="descriptionStage"
-                    value={block.descriptionStage}
-                    onChange={(e) =>
-                      handleChangeBlocks(
-                        index,
-                        "descriptionStage",
-                        e.target.value
-                      )
-                    }
-                  />
-                </label>
-
-                <Button
-                  type="dashed"
-                  icon={<MinusCircleOutlined />}
-                  onClick={() => removeBlock(index)}
-                  className="removeStageNew"
-                >
-                  Удалить этап
-                </Button>
-              </div>
+        {/* Таблица */}
+        <table>
+          <thead>
+            <tr>
+              <th className="topTable">Дата формирования</th>
+              <th className="topTable">Номер</th>
+              <th className="topTable">Предмет</th>
+              <th className="topTable">Ответственный отдел</th>
+              <th className="topTable">Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row) => (
+              <tr key={row.id} onDoubleClick={() => handleRowDoubleClick(row)}>
+                <td>{row.date_formation}</td>
+                <td>{row.number}</td>
+                <td>{row.item}</td>
+                <td>{row.responsible_department}</td>
+                <td>{row.amount}</td>
+              </tr>
             ))}
+          </tbody>
+        </table>
 
-            <Button
-              type="dashed"
-              icon={<PlusOutlined />}
-              onClick={addBlock}
-              className="addStageNew"
-            >
-              Добавить новый этап
-            </Button>
+        {/* Модальное окно добавления */}
+        {isAddModalOpen && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Добавление новых данных</h3>
+              <form onSubmit={handleAddSubmit}>
+                <label htmlFor="date_formation">Дата формирования:</label>
+                <input
+                  type="text"
+                  id="date_formation"
+                  name="date_formation"
+                  value={newRow.date_formation}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="number">Номер:</label>
+                <input
+                  type="text"
+                  id="number"
+                  name="number"
+                  value={newRow.number}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="item">Предмет:</label>
+                <input
+                  type="text"
+                  id="item"
+                  name="item"
+                  value={newRow.item}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="responsible_department">
+                  Ответственный отдел:
+                </label>
+                <input
+                  type="text"
+                  id="responsible_department"
+                  name="responsible_department"
+                  value={newRow.responsible_department}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="amount">Сумма:</label>
+                <input
+                  type="text"
+                  id="amount"
+                  name="amount"
+                  value={newRow.amount}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <button type="submit">Добавить</button>
+                <button type="button" onClick={() => setIsAddModalOpen(false)}>
+                  Отмена
+                </button>
+              </form>
+            </div>
           </div>
-        </Form>
+        )}
+
+        {/* Модальное окно редактирования */}
+        {isEditModalOpen && (
+          <div className="modal">
+            <div className="modal-content">
+              <h3>Редактирование данных</h3>
+              {/* Здесь оставляем логику редактирования, как в предыдущем примере */}
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="date_formation">Дата формирования:</label>
+                <input
+                  type="text"
+                  id="date_formation"
+                  name="date_formation"
+                  value={editingRow?.date_formation || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="number">Номер:</label>
+                <input
+                  type="text"
+                  id="number"
+                  name="number"
+                  value={editingRow?.number || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="item">Предмет:</label>
+                <input
+                  type="text"
+                  id="item"
+                  name="item"
+                  value={editingRow?.item || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="responsible_department">
+                  Ответственный отдел:
+                </label>
+                <input
+                  type="text"
+                  id="responsible_department"
+                  name="responsible_department"
+                  value={editingRow?.responsible_department || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <label htmlFor="amount">Сумма:</label>
+                <input
+                  type="text"
+                  id="amount"
+                  name="amount"
+                  value={editingRow?.amount || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+
+                <button type="submit">Сохранить</button>
+                <button type="button" onClick={() => setIsEditModalOpen(false)}>
+                  Отмена
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
