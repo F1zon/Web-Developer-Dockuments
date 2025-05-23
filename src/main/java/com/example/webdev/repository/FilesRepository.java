@@ -1,6 +1,7 @@
 package com.example.webdev.repository;
 
 import com.example.webdev.db.dao.FilesDao;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,9 @@ public interface FilesRepository extends JpaRepository<FilesDao, Long> {
 
     @Query(value = "select name from файлы where contract = ?1", nativeQuery = true)
     List<String> getNameByContractId(int id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from файлы where contract = ?1", nativeQuery = true)
+    void deleteByContractId(int id);
 }

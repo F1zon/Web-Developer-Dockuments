@@ -60,6 +60,7 @@ public class EditController {
     public DateDto getDatesById(@RequestParam int id) {
         return dateService.findById(id);
     }
+
     @GetMapping("/edited/contract")
     public FullContractDto getContractById(@RequestParam int id) {
         ComponentContractDto componentContractDto = contractService.findByIdContract(id);

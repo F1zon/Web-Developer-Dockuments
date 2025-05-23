@@ -43,6 +43,7 @@ public class MainController {
     @DeleteMapping(value = "/delete")
     public ResponseEntity<ContractDao> deleteContract(@RequestParam int id) {
         log.info("Deleting contract with id {}", id);
+        fileService.deleteByContractId(id);
         contractService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.OK);

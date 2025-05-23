@@ -12,4 +12,5 @@ import lombok.Setter;
 public class DateModel {
     String dateStart;
     String description;
+    int idContract;
 }

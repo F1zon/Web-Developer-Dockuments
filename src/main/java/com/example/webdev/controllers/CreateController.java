@@ -62,7 +62,7 @@ public class CreateController {
                     model.getStatus()
             );
 
-            DateModel dateModel = new DateModel(model.getDate(), model.getDescription());
+            DateModel dateModel = new DateModel(model.getDate(), model.getDescription(), model.getId());
             StageDto[] arrStageDto = model.getStageDtoArr();
             contractService.save(contractModel);
 

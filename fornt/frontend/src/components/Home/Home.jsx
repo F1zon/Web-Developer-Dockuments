@@ -6,12 +6,18 @@ import "./Home.css";
 
 function Home() {
   const [object, setObject] = useState();
+  const [filters, setFilters] = useState({});
+
+  const applyFilters = (filtersData) => {
+    console.log("Фильтры применены", filtersData);
+    setFilters(filtersData);
+  };
 
   return (
     <div className="container">
-      <Menu object={object} setObject={setObject} />
+      <Menu object={object} setObject={setObject} onApplyFilters={applyFilters} />
       <Header />
-      <Main object={object} />
+      <Main filters={filters} />
     </div>
   );
 }

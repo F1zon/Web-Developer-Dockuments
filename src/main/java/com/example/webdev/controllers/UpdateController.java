@@ -25,7 +25,7 @@ import java.util.List;
 
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4200" })
 @RestController
-public class UpdateController {
+public class  UpdateController {
     private final ContractServiceImpl contractService;
     private final DateService dateService;
     private final FileService fileService;
@@ -74,7 +74,8 @@ public class UpdateController {
 
             DateModel dateModel = new DateModel(
                     model.getDate(),
-                    model.getDescription()
+                    model.getDescription(),
+                    model.getId()
             );
 
             StageDto[] arrStageDto = model.getStageDtoArr();
@@ -94,6 +95,7 @@ public class UpdateController {
 
             // Обновляем контракт в базе данных
             contractService.updateContract(contractModel);
+            logger.info("Updated contract id: {}", model.getId());
             dateService.save(dateModel, model.getId());
 
             // Обрабатываем загруженные файлы (если они есть)

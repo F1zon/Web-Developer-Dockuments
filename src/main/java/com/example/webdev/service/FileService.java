@@ -147,10 +147,6 @@ public class FileService {
         }
     }
 
-//    public FilesDao CreateDao(MultipartFile file, int idContract) {
-//        return new FilesDao(idContract, file., fileRepository.getNexValId());
-//    }
-
     private FilesDto createFilesDto(FilesDao file) {
         return new FilesDto(file.getId(),
                 file.getFileWay(),
@@ -182,5 +178,24 @@ public class FileService {
 
     public List<String> getFilesNamesByIdContract(int idContract) {
         return fileRepository.getNameByContractId(idContract);
+    }
+
+    public void deleteByContractId(int idContract) {
+        fileRepository.deleteByContractId(idContract);
+
+        // Указываем путь к каталогу
+        File directory = new File("../files/contr" + idContract);
+
+        // Проверяем, существует ли каталог и является ли он каталогом
+        if (directory.exists() && directory.isDirectory()) {
+            boolean isDeleted = directory.delete();
+            if (isDeleted) {
+                System.out.println("Каталог успешно удален.");
+            } else {
+                System.out.println("Не удалось удалить каталог.");
+            }
+        } else {
+            System.out.println("Каталог не существует или это не каталог.");
+        }
     }
 }

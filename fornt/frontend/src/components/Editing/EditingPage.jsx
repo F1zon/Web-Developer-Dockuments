@@ -28,6 +28,7 @@ import {
   TreeSelect,
   Upload,
   Space,
+  Table,
 } from "antd";
 import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
@@ -53,7 +54,7 @@ const EditedPage = () => {
   };
 
   const initialFormStateFiles = {
-    fileArr: new Array(),
+    fileArr: [],
   };
 
   const initialFormStateDates = {
@@ -203,10 +204,6 @@ const EditedPage = () => {
     navigate("/");
   };
 
-  const handleFin = (async) => {
-    navigate("/finance?id=" + contract_id);
-  }
-
   const addBlock = () => {
     setBlocks([
       ...initialBlocks,
@@ -268,7 +265,7 @@ const EditedPage = () => {
     const length = fileData.length;
     const array = new Array(length);
     // Добавляем файлы в FormData
-    fileData.forEach((file, index) => {
+    fileData.fileArr.forEach((file, index) => {
       newFormData.append("fileArr", file);
     });
 
@@ -341,9 +338,56 @@ const EditedPage = () => {
     }
   };
 
+  const handleDownloadFiles = async (filename) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/download?id=${contract_id}&fileName=${filename}`,
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Ошибка при скачивании файла:", error);
+    }
+  };
+
+  const columns = [
+    {
+      title: "Имя файла",
+      dataIndex: "filename",
+      key: "uid",
+    },
+    {
+      title: "Действия",
+      key: "actions",
+      render: (_, record) => (
+        <Button
+          type="link"
+          onClick={() => handleDownloadFiles(record.filename)}
+        >
+          Скачать
+        </Button>
+      ),
+    },
+  ];
+
+  // Преобразуем массив файлов в формат, подходящий для таблицы
+  const dataSource = fileList.map((filename) => ({
+    key: filename.uid, // Уникальный ключ для каждой строки
+    filename: filename.name, // Имя файла
+  }));
+
   // ################################################################################ Отображение страницы
 
-  console.log("files: ", files);
+  console.log("fileData: ", fileData);
   return (
     <div className="container-input">
       <Header className="impHeader" />
@@ -541,47 +585,14 @@ const EditedPage = () => {
             </Form.Item>
           </label>
 
-          <label className="download">
+          <label className="upload">
             Файлы для скачивания:
-            <Form.Item label="" className="downloadFiles">
-              <Upload
-                fileList={fileList}
-                onPreview={(file) => handleDownload(file.name)} // Обработчик скачивания
-                showUploadList={{
-                  showDownloadIcon: true, // Показывать иконку скачивания
-                  showRemoveIcon: false, // Не показывать иконку удаления
-                }}
-                listType="picture-card"
-                multiple
-              ></Upload>
-            </Form.Item>
+            <Table dataSource={dataSource} columns={columns} rowKey="uid" />
           </label>
-
-          {/* <label className="upload">
-            Акты и счета:
-            <Form.Item label="" className="uploadFiles">
-              <Upload
-                beforeUpload={() => false}
-                onChange={handleChangeFiles}
-                // action={handleChangeFiles}
-                listType="picture-card"
-                multiple
-              >
-                <button style={{ border: 0, background: "none" }} type="button">
-                  <PlusOutlined style={{ color: "white" }} />
-                  <div style={{ marginTop: 8, color: "white" }}>Загрузить</div>
-                </button>
-              </Upload>
-            </Form.Item>
-          </label> */}
         </div>
 
         <Button className="sub" onClick={handleSubmit}>
           Сохранить
-        </Button>
-
-        <Button className="sub" onClick={handleFin}>
-          Сводка
         </Button>
       </Form>
     </div>

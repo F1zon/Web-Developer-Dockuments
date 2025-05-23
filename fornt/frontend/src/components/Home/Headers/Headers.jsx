@@ -7,7 +7,7 @@ function Header() {
         <div className="Header">
             <div className="NavBar">
                 <a href="/" className="docks">Договоры</a>
-                <a href="/summary/" className="docks">Сводка</a>
+                {/* <a href="/summary/" className="docks">Сводка</a> */}
             </div>
             <a href="" className="notImg">
                 <img src={notifications} alt="nitfImg" className="nitfImg" />
