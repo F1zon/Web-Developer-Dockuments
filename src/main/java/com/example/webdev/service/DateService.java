@@ -32,12 +32,12 @@ public class DateService {
     }
 
     public DateDao createDateDao(DateModel model, int idContract) {
-        return new DateDao(model.getDateStart(), model.getDescription(), idContract, Optional.of(dateRepository.getNexValId()).orElse(1));
+        return new DateDao(model.getDateStart(), model.getDescription(), idContract);
     }
 
     @Transactional
     public void save(DateModel model, int idContract) {
-        if (isDateExist(idContract)) {
+        if (!isDateExist(idContract)) {
             dateRepository.save(createDateDao(model, idContract));
         } else {
             update(model);

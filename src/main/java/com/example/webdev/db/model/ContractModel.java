@@ -7,11 +7,20 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContractModel {
-    int id;
+    int idContract;
     String objects;
     int customer;
     String executor;
     int responsible;
     int responsible2;
     int states;
+
+    public ContractModel(String objects, int customer, String executor, int responsible, int responsible2, int states) {
+        this.objects = objects;
+        this.customer = customer;
+        this.executor = executor;
+        this.responsible = responsible;
+        this.responsible2 = responsible2;
+        this.states = states;
+    }
 }

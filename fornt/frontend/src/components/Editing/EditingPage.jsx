@@ -53,9 +53,9 @@ const EditedPage = () => {
     states: "",
   };
 
-  const initialFormStateFiles = {
-    fileArr: [],
-  };
+  // const initialFormStateFiles = {
+  //   fileArr: [],
+  // };
 
   const initialFormStateDates = {
     dateStart: "",
@@ -81,7 +81,7 @@ const EditedPage = () => {
   const [files, setFiles] = useState();
 
   const [contract, setContract] = useState(initialFormStateContract);
-  const [fileData, setFilesData] = useState(initialFormStateFiles);
+  const [fileData, setFilesData] = useState({ fileArr: [] });
   const [dateData, setDateData] = useState(initialFormStateDates);
   const [initialBlocks, setBlocks] = useState([
     { dateStartStage: dayjs(), descriptionStage: "", dateEndStage: dayjs() },
@@ -158,6 +158,10 @@ const EditedPage = () => {
     isCalledRef.current = true;
   }, []);
 
+  useEffect(() => {
+    console.log("Обновилось состояние fileData:", fileData);
+  }, [fileData]);
+
   // ################################################################################ Заполнение данных с клиента
 
   const handleChange = (str, i) => {
@@ -194,11 +198,17 @@ const EditedPage = () => {
       .map((file) => file.originFileObj) // Получаем originFileObj
       .filter(Boolean); // Фильтруем undefined или null
 
-    setFilesData(files); // Сохраняем массив файлов в состоянии
+    setFilesData({ fileArr: files }); // Сохраняем массив файлов в состоянии
     console.log("Массив файлов:", fileData);
   };
 
   const handleSubmit = (async) => {
+    // Проверка: если статус === "В работе", то stage не может быть пустым
+    if (status === 6 && initialBlocks.length === 0) {
+      message.error("Нужно добавить хотя бы один этап");
+      return;
+    }
+
     updateContract();
     alert("Контракт сохранён");
     navigate("/");
@@ -262,14 +272,18 @@ const EditedPage = () => {
     const newFormData = new FormData();
     newFormData.append("model", JSON.stringify(articleContract));
 
-    const length = fileData.length;
-    const array = new Array(length);
-    // Добавляем файлы в FormData
-    fileData.fileArr.forEach((file, index) => {
-      newFormData.append("fileArr", file);
-    });
+    if (fileData.fileArr && fileData.fileArr.length > 0) {
+      [...fileData.fileArr].forEach((file) => {
+        if (file instanceof File) {
+          newFormData.append("fileArr", file);
+        } else {
+          console.warn("Не файл:", file);
+        }
+      });
+    } else {
+      console.warn("Файлы отсутствуют");
+    }
 
-    // Проверка содержимого formData
     for (let pair of newFormData.entries()) {
       console.log(pair[0], pair[1]);
     }
@@ -387,7 +401,7 @@ const EditedPage = () => {
 
   // ################################################################################ Отображение страницы
 
-  console.log("fileData: ", fileData);
+  // console.log("fileData: ", fileData);
   return (
     <div className="container-input">
       <Header className="impHeader" />

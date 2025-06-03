@@ -135,7 +135,7 @@ public class ContractServiceImpl {
 
     public ContractDao creteDao(ContractModel model) {
         return new ContractDao(model.getObjects(), model.getCustomer(), model.getExecutor(),
-                model.getResponsible(), model.getResponsible2(), model.getStates(), repository.getNexValId());
+                model.getResponsible(), model.getResponsible2(), model.getStates());
     }
 
     @Transactional
@@ -145,7 +145,23 @@ public class ContractServiceImpl {
 
     @Transactional
     public void updateContract(ContractModel model) {
-        repository.updateContract(model.getObjects(), model.getCustomer(), model.getExecutor(), model.getResponsible(),
-                model.getResponsible2(), model.getStates(), model.getId());
+//        repository.updateContract(model.getObjects(), model.getCustomer(), model.getExecutor(), model.getResponsible(),
+//                model.getResponsible2(), model.getStates(), model.getId());
+
+        ContractDao updateContract;
+
+        if (repository.findById(model.getIdContract()).isPresent()) {
+            updateContract = repository.findById(model.getIdContract()).get();
+        } else {
+            return;
+        }
+
+        updateContract.setObjects(model.getObjects());
+        updateContract.setCustomer(model.getCustomer());
+        updateContract.setExecutor(model.getExecutor());
+        updateContract.setResponsible(model.getResponsible());
+        updateContract.setResponsible2(model.getResponsible2());
+        updateContract.setStates(model.getStates());
+        repository.save(updateContract);
     }
 }

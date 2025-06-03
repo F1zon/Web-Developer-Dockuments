@@ -180,8 +180,8 @@ function Menu({ object, setObject, onApplyFilters }) {
             // onChange={handleChange.bind(this, "customer")}
             onChange={handleChange("status")}
           >
-            {statuses.map((cus) => (
-              <Select.Option value={cus.name}> {cus.title} </Select.Option>
+            {statuses.map((stat) => (
+              <Select.Option value={stat.title}> {stat.title} </Select.Option>
             ))}
           </Select>
           {/* <input className="searchStatus" placeholder="Статус"></input> */}

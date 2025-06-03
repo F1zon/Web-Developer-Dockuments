@@ -54,7 +54,7 @@ public class CreateController {
             FullContractModel model = objectMapper.readValue(modelJson, FullContractModel.class);
             logger.info("Update contract: {}", model.getObject());
 
-            ContractModel contractModel = new ContractModel(model.getId(), model.getObject(),
+            ContractModel contractModel = new ContractModel(model.getObject(),
                     model.getCustomer(),
                     model.getExecutor(),
                     model.getResponsibleOne(),

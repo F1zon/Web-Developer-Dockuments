@@ -1,10 +1,7 @@
 package com.example.webdev.db.dao;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
@@ -16,6 +13,7 @@ import java.sql.Date;
 public class DateDao {
     @Id
     @Column(name = "id_dat")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "date_start")
@@ -25,11 +23,10 @@ public class DateDao {
     @Column(name = "contract")
     private int idContract;
 
-    public DateDao(String start, String description, int idContract, int id) {
+    public DateDao(String start, String description, int idContract) {
         this.dateStart = start;
         this.description = description;
         this.idContract = idContract;
-        this.id = id;
     }
 
     public DateDao() {

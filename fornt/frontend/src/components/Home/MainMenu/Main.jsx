@@ -19,6 +19,8 @@ function Main({ filters }) {
 
     // Фильтруем данные при изменении filters
     useEffect(() => {
+        console.log(filters.status);
+
         if (!filters || Object.keys(filters).length === 0) {
             setFilteredDocks(docks);
             return;

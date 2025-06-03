@@ -11,6 +11,7 @@ import lombok.*;
 public class ContractDao {
     @Id
     @Column(name = "id_contract")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idContract;
 
     @Column(name = "objects")
@@ -39,5 +40,14 @@ public class ContractDao {
         this.responsible2 = responsible2;
         this.states = states;
         this.idContract = idContract;
+    }
+
+    public ContractDao(String objects, int customer, String executor, int responsible, int responsible2, int states) {
+        this.objects = objects;
+        this.customer = customer;
+        this.executor = executor;
+        this.responsible = responsible;
+        this.responsible2 = responsible2;
+        this.states = states;
     }
 }
