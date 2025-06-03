@@ -19,7 +19,7 @@ public interface DateRepository extends JpaRepository<DateDao, Long> {
     @Query(value = """
         select * from даты where contract = ?1
         """, nativeQuery = true)
-    DateDao findDateDaoById(int contract);
+    DateDao findDateDaoById(Long contract);
 
     @Transactional
     @Modifying
@@ -27,5 +27,5 @@ public interface DateRepository extends JpaRepository<DateDao, Long> {
     void update(String dateStart, String description, int id);
 
     @Query(value = "SELECT * FROM даты WHERE contract = ?1", nativeQuery = true)
-    DateDao findDateDaoByIdContract(int idContract);
+    DateDao findDateDaoByIdContract(Long idContract);
 }

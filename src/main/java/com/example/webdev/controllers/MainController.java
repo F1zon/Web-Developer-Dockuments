@@ -21,21 +21,30 @@ public class MainController {
     private final ContractServiceImpl contractService;
     private final DateService dateService;
     private final FileService fileService;
+    private final StageService stageService;
     private final Logger log = LoggerFactory.getLogger(MainController.class);
 //    private final FileModel files = new FileModel();
     private List<MultipartFile> files = new ArrayList<>();
 
     @Autowired
-    public MainController(ContractServiceImpl contractService, DateService dateService, FileService fileService) {
+    public MainController(ContractServiceImpl contractService, DateService dateService, FileService fileService, StageService stageService) {
         this.contractService = contractService;
         this.dateService = dateService;
         this.fileService = fileService;
+        this.stageService = stageService;
     }
 
     @GetMapping(value = "/docks")
     public ResponseEntity<List<SmallContractDto>> getContracts() {
         final List<SmallContractDto> contracts = contractService.readAll();
-        return contracts != null && !contracts.isEmpty()
+
+        for (SmallContractDto contract : contracts) {
+            final StageDto[] stage = stageService.findByContractId(contract.getIdContract());
+            contract.setDateStart(stage[0].getDateStartStage());
+            contract.setDateEnd(stage[stage.length - 1].getDateEndStage());
+        }
+
+        return !contracts.isEmpty()
                 ? new ResponseEntity<>(contracts, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

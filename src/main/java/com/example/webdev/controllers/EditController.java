@@ -58,7 +58,7 @@ public class EditController {
 
     @GetMapping("/edited/dates")
     public DateDto getDatesById(@RequestParam int id) {
-        return dateService.findById(id);
+        return dateService.findById((long) id);
     }
 
     @GetMapping("/edited/contract")
@@ -66,7 +66,7 @@ public class EditController {
         ComponentContractDto componentContractDto = contractService.findByIdContract(id);
         PersonalDto personalDtoOne = contractService.readPersonalByIdOne(id);
         PersonalDto personalDtoTwo = contractService.readPersonalByIdTwo(id);
-        DateDto dateDto = dateService.findById(id);
+        DateDto dateDto = dateService.findById((long) id);
         StageDto[] stageDtos = stageService.findByContractId(id);
         List<String> files = fileService.getFilesNamesByIdContract(id);
 

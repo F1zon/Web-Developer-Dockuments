@@ -23,7 +23,7 @@ public class DateService {
 
     private DateDto convertDaoToDto(DateDao dao) {
         return new DateDto(
-            dao.getId(), dao.getDescription(), dao.getIdContract(), dao.getDateStart()
+                Math.toIntExact(dao.getId()), dao.getDescription(), dao.getIdContract(), dao.getDateStart()
         );
     }
 
@@ -44,7 +44,7 @@ public class DateService {
         }
     }
 
-    public DateDto findById(int id) {
+    public DateDto findById(Long id) {
 //        String[] request = dateRepository.findDateDaoById(id).split(",");
 
         return convertDaoToDto(dateRepository.findDateDaoById(id));

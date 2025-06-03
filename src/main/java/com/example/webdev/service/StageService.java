@@ -70,6 +70,11 @@ public class StageService {
         return dtos;
     }
 
+    public StageDto findStartStage(int id) {
+        StageDao[] stageDaos = repo.findByContractId(id);
+        return stageDaos.length > 0 ? convertDaoToDto(stageDaos[0]) : new StageDto();
+    }
+
     /**
      * Синхронизирует массив StageDto с данными в базе данных.
      *

@@ -14,7 +14,7 @@ public class DateDao {
     @Id
     @Column(name = "id_dat")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "date_start")
     private String dateStart;
