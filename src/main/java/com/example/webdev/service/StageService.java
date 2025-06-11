@@ -62,6 +62,11 @@ public class StageService {
     // Поиск всех этапов с определёным id контракта
     public StageDto[] findByContractId(int id) {
         StageDao[] stageDaos = repo.findByContractId(id);
+
+        if (stageDaos.length == 0) {
+            return new StageDto[0];
+        }
+
         StageDto[] dtos = new StageDto[stageDaos.length];
         for (int i = 0; i < stageDaos.length; i++) {
             dtos[i] = convertDaoToDto(stageDaos[i]);

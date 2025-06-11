@@ -109,8 +109,8 @@ function Menu({ object, setObject, onApplyFilters }) {
   return (
     <div className="Menu">
       <div className="headText">
-        <h1 className="D">Docks-</h1>
-        <h1 className="T">Tools</h1>
+        <h1 className="D">База-</h1>
+        <h1 className="T">Договоров</h1>
       </div>
 
       <div className="ButtonList">
